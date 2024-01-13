@@ -60,7 +60,10 @@ router.afterEach((to) => {
       <!-- AUTH SECTION -->
       <div class="flex items-center">
         <Button class="mr-4" variant="outline" as-child>
-          <router-link to="/login">{{ route.path }}</router-link>
+          <router-link to="/login">
+            <!-- {{ route.path }}-->
+            Login
+          </router-link>
         </Button>
         <Button variant="default" as-child>
           <router-link to="/register">Register</router-link>
