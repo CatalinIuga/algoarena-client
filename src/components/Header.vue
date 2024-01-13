@@ -52,7 +52,7 @@ router.afterEach((to) => {
             ]"
             as-child
           >
-            <router-link to="/leaderboard">Leaderboard</router-link>
+            <router-link to="/leaderboards">Leaderboards</router-link>
           </Button>
         </div>
       </section>

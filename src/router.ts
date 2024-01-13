@@ -8,7 +8,11 @@ export const router = createRouter({
       component: () => import("./views/Home.vue"),
     },
     {
-      // unmatched path
+      path: "/login",
+      component: () => import("./views/Login.vue"),
+    },
+    {
+      // unmatched paths will redirect to 404
       path: "/:pathMatch(.*)*",
       component: () => import("./views/404.vue"),
     },

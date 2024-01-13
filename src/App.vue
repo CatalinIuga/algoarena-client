@@ -6,7 +6,7 @@ import Header from "@/components/Header.vue";
 <template>
   <div class="flex min-h-screen flex-col bg-background text-foreground">
     <Header />
-    <main class="flex-1 bg-background">
+    <main class="flex-1 flex h-full w-full bg-background">
       <router-view />
     </main>
     <Footer />
