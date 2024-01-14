@@ -19,27 +19,32 @@ import { Label } from "@/components/ui/label";
     <!-- LOGIN INPUTS -->
     <Card class="">
       <CardHeader class="space-y-1">
-        <CardTitle class="text-3xl"> Login to your account </CardTitle>
+        <CardTitle class="text-3xl">Create an account</CardTitle>
         <CardDescription class="pt-4">
-          Login using your email and password.
+          An account is required to use the application.
         </CardDescription>
       </CardHeader>
       <CardContent class="grid gap-4">
         <div class="grid gap-2">
-          <Label for="email">Email</Label>
-          <Input id="email" type="email" placeholder="<your_email.com>" />
+          <Label for="username">Username</Label>
+          <Input id="username" type="text" placeholder="<your_username>" />
         </div>
+        <div class="grid gap-2">
+          <Label for="email">Email</Label>
+          <Input id="email" type="email" placeholder="<your@email.com>" />
+        </div>
+
         <div class="grid gap-2">
           <Label for="password">Password</Label>
           <Input id="password" type="password" placeholder="<your_password>" />
         </div>
       </CardContent>
       <CardFooter>
-        <Button class="w-full"> Login </Button>
+        <Button class="w-full">Create account</Button>
         <div class="flex justify-center items-center mt-4">
-          <span class="text-sm">Don't have an account?</span>
+          <span class="text-sm">Already have an account?</span>
           <Button variant="link" as-child>
-            <router-link to="/register"> Create an account </router-link>
+            <router-link to="/login">Login</router-link>
           </Button>
         </div>
       </CardFooter>

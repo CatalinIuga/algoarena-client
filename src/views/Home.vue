@@ -27,9 +27,9 @@ const abouts = [
       "You can use AlgoArena as a student or as a professor. If you are a student, you can solve problems from various problem sets and compete with other users. If you are a professor, you can create your own problem sets and assign them to your students. Each problem will also have a leaderboard where you can see the progress of your students.",
   },
   {
-    title: "What technologies were used to build AlgoArena?",
+    title: "What tech stack does AlgoArena use?",
     content:
-      "AlgoArena is built using Vue.js, TailwindCSS, and TypeScript. The backend is built using Spring Boot and MySQL. Solutions are tested using Judge0.",
+      "AlgoArena is built using Vue3, TailwindCSS, and TypeScript. The backend is built using Spring Boot and MySQL. Problem solutions are tested using Judge0.",
   },
 ];
 </script>

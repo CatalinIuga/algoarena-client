@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 <template>
   <footer class="flex border-t justify-center items-center h-16 bg-background">
     <p class="text-foreground/80">
-      &copy; {{ new Date().getFullYear() }}
       <router-link to="/" class="text-primary">
-        <Button variant="link">AlgoArena</Button>
-      </router-link>
+        <Button variant="link" class="text-base text-foreground"
+          >AlgoArena</Button
+        > </router-link
+      >&copy; {{ new Date().getFullYear() }}
     </p>
   </footer>
 </template>

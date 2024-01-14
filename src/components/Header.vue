@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import Button from "@/components/ui/button/Button.vue";
+import { authStore } from "@/store";
+import { storeToRefs } from "pinia";
 import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
-const router = useRouter();
+const store = authStore();
+const { userId } = storeToRefs(store);
 
+const router = useRouter();
 const route = reactive(router.currentRoute.value);
 router.afterEach((to) => {
   route.path = to.path;
@@ -31,7 +35,7 @@ router.afterEach((to) => {
         </Button>
 
         <!-- LINKS SECTION -->
-        <div class="">
+        <div class="hidden md:block">
           <Button
             variant="ghost"
             :class="[
@@ -58,16 +62,24 @@ router.afterEach((to) => {
       </section>
 
       <!-- AUTH SECTION -->
-      <div class="flex items-center">
-        <Button class="mr-4" variant="outline" as-child>
+      <div v-if="!userId" class="flex items-center">
+        <Button class="mr-4" variant="default" as-child>
           <router-link to="/login">
             <!-- {{ route.path }}-->
             Login
           </router-link>
         </Button>
-        <Button variant="default" as-child>
+        <Button variant="outline" as-child>
           <router-link to="/register">Register</router-link>
         </Button>
+      </div>
+
+      <!-- USER SECTION -->
+      <div v-else class="flex items-center">
+        <Button class="mr-4" variant="default" as-child>
+          <router-link to="/profile">Profile</router-link>
+        </Button>
+        <Button variant="outline">Logout</Button>
       </div>
     </div>
   </header>
