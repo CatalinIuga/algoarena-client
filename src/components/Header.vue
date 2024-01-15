@@ -24,7 +24,7 @@ router.afterEach((to) => {
       <!-- LOGO SECTION -->
       <section class="flex items-center">
         <Button
-          class="font-extrabold text-lg text-foreground no-underline"
+          class="font-extrabold text-lg text-foreground no-underline mr-2"
           variant="ghost"
           as-child
         >
@@ -37,7 +37,8 @@ router.afterEach((to) => {
         <!-- LINKS SECTION -->
         <div class="hidden md:block">
           <Button
-            variant="ghost"
+            variant="outline"
+            class="mr-2"
             :class="[
               route.path === '/problems'
                 ? 'text-primary'
@@ -48,9 +49,10 @@ router.afterEach((to) => {
             <router-link to="/problems">Problems</router-link>
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
+            class="items-center"
             :class="[
-              route.path === '/leaderboard'
+              route.path === '/leaderboards'
                 ? 'text-primary'
                 : 'text-foreground/70',
             ]"
@@ -63,13 +65,13 @@ router.afterEach((to) => {
 
       <!-- AUTH SECTION -->
       <div v-if="!userId" class="flex items-center">
-        <Button class="mr-4" variant="default" as-child>
+        <Button class="mr-4 px-7" variant="default" as-child>
           <router-link to="/login">
             <!-- {{ route.path }}-->
             Login
           </router-link>
         </Button>
-        <Button variant="outline" as-child>
+        <Button variant="secondary" as-child>
           <router-link to="/register">Register</router-link>
         </Button>
       </div>

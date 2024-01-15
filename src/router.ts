@@ -15,6 +15,14 @@ export const router = createRouter({
       path: "/register",
       component: () => import("./views/Register.vue"),
     },
+    {
+      path: "/profile",
+      component: () => import("./views/Profile.vue"),
+    },
+    {
+      path: "/:pathMatch(.*)*",
+      component: () => import("./views/404.vue"),
+    },
 
     {
       // unmatched paths will redirect to 404
