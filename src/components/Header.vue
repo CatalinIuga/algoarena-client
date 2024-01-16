@@ -40,20 +40,20 @@ router.afterEach((to) => {
             variant="outline"
             class="mr-2"
             :class="[
-              route.path === '/problems'
-                ? 'text-primary'
+              route.path === '/problemsets'
+                ? 'text-primary hover:text-primaru/80'
                 : 'text-foreground/70',
             ]"
             as-child
           >
-            <router-link to="/problems">Problems</router-link>
+            <router-link to="/problemsets">Problem Sets</router-link>
           </Button>
           <Button
             variant="outline"
             class="items-center"
             :class="[
               route.path === '/leaderboards'
-                ? 'text-primary'
+                ? 'text-primary hover:text-primaru/80'
                 : 'text-foreground/70',
             ]"
             as-child
@@ -66,10 +66,7 @@ router.afterEach((to) => {
       <!-- AUTH SECTION -->
       <div v-if="!userId" class="flex items-center">
         <Button class="mr-4 px-7" variant="default" as-child>
-          <router-link to="/login">
-            <!-- {{ route.path }}-->
-            Login
-          </router-link>
+          <router-link to="/login"> Login </router-link>
         </Button>
         <Button variant="secondary" as-child>
           <router-link to="/register">Register</router-link>
@@ -78,10 +75,10 @@ router.afterEach((to) => {
 
       <!-- USER SECTION -->
       <div v-else class="flex items-center">
-        <Button class="mr-4" variant="default" as-child>
+        <Button size="sm" class="mr-4" variant="default" as-child>
           <router-link to="/profile">Profile</router-link>
         </Button>
-        <Button variant="outline">Logout</Button>
+        <Button size="sm" class="px-4" variant="secondary">Logout</Button>
       </div>
     </div>
   </header>

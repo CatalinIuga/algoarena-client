@@ -135,8 +135,8 @@ const abouts = [
         </CardHeader>
         <CardContent>
           <CardDescription>
-            If you are a professor, you can create your own problem sets and
-            assign them to your students. Each problem will also have a
+            If you are a professor, you can create your own problem sets and ask
+            your students to solve them. Each problem will also have a
             leaderboard where you can see the progress of your students.
           </CardDescription>
         </CardContent>

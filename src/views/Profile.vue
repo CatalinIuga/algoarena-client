@@ -144,6 +144,21 @@ const submissions = ref([
               </DialogHeader>
               <div class="grid gap-4 py-4">
                 <div class="grid grid-cols-4 items-center gap-4">
+                  <Label for="avatar" class="text-right"> Avatar </Label>
+                  <Input
+                    type="file"
+                    id="avatar"
+                    accept="
+                      image/png,
+                      image/jpeg,
+                      image/jpg,
+                      image/gif,
+                      image/svg+xml
+                      "
+                    class="file:text-primary/80 col-span-3"
+                  />
+                </div>
+                <div class="grid grid-cols-4 items-center gap-4">
                   <Label for="name" class="text-right">Username</Label>
                   <Input id="name" :value="user.name" class="col-span-3" />
                 </div>
