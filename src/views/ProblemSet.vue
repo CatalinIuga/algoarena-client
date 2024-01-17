@@ -129,10 +129,10 @@ const dummy_problems = [
 </script>
 
 <template>
-  <div class="flex flex-col md:grid grid-cols-7 gap-5 flex-1 p-5">
+  <div class="flex flex-1 grid-cols-7 flex-col gap-5 p-5 md:grid">
     <!-- Filters section -->
     <!-- name, dificulty, status, category -->
-    <section class="flex flex-col col-span-2 gap-2">
+    <section class="col-span-2 flex flex-col gap-2">
       <Card>
         <CardHeader class="items-center gap-3">
           <CardTitle>Filters</CardTitle>
@@ -150,7 +150,7 @@ const dummy_problems = [
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="any">Any</SelectItem>
-                <SelectGroup label="Data Structures">
+                <SelectGroup class="max-h-60 overflow-y-auto">
                   <SelectItem value="array">Array</SelectItem>
                   <SelectItem value="linked-list">Linked List</SelectItem>
                   <SelectItem value="stack">Stack</SelectItem>
@@ -208,7 +208,7 @@ const dummy_problems = [
     </section>
 
     <!-- Problem card grid section -->
-    <section class="grid grid-cols-3 gap-4 col-span-5">
+    <section class="col-span-5 grid grid-cols-3 gap-4">
       <Card v-for="problem in dummy_problems.slice(0, 9)" :key="problem.id">
         <CardHeader class="items-center">
           <CardTitle>{{ problem.name }}</CardTitle>
@@ -228,7 +228,7 @@ const dummy_problems = [
             <Badge variant="outline" class="mr-2">{{ problem.category }}</Badge>
             <Badge variant="secondary">{{ problem.difficulty }}</Badge>
           </div>
-          <p class="text-foreground/70 min-w-0 text-ellipsis">
+          <p class="min-w-0 text-ellipsis text-foreground/70">
             {{ problem.description.slice(0, 50) }}
           </p>
         </CardContent>
@@ -254,7 +254,7 @@ const dummy_problems = [
       >
         <PaginationList
           v-slot="{ items }"
-          class="flex justify-center items-center gap-1"
+          class="flex items-center justify-center gap-1"
         >
           <PaginationFirst />
           <PaginationPrev />
@@ -267,7 +267,7 @@ const dummy_problems = [
               as-child
             >
               <Button
-                class="w-10 h-10 p-0"
+                class="h-10 w-10 p-0"
                 :variant="item.value === page ? 'default' : 'outline'"
               >
                 {{ item.value }}
