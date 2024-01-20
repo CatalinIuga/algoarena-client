@@ -17,9 +17,9 @@ import {
 } from "@/components/ui/select";
 
 import { javascript } from "@codemirror/lang-javascript";
-import { oneDark } from "@codemirror/theme-one-dark";
 import { computed, ref } from "vue";
 import { Codemirror } from "vue-codemirror";
+import { shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
 
 const problem = {
@@ -35,7 +35,7 @@ const problem = {
 const language = ref("C++");
 const code = computed(() => languages[language.value].code);
 
-const extensions = [javascript(), oneDark];
+const extensions = [javascript(), shadCn];
 </script>
 
 <template>
@@ -92,9 +92,7 @@ const extensions = [javascript(), oneDark];
             </SelectItem>
           </SelectContent>
         </Select>
-        <Button size="sm" variant="default">
-          Submit
-        </Button>
+        <Button size="sm" variant="default"> Submit </Button>
       </div>
       <Codemirror
         :autofocus="true"
