@@ -233,7 +233,7 @@ const dummy_problems = [
           </p>
         </CardContent>
         <CardFooter class="flex justify-end">
-          <Button variant="default">
+          <Button variant="default" as-child>
             <router-link
               :to="$router.currentRoute.value.path + '/problem/' + problem.id"
             >

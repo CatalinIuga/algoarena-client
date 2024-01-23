@@ -8,17 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import { computed, ref, watch } from "vue";
 import { Codemirror } from "vue-codemirror";
-import { shadCn } from "../lib/codemirror";
+import { oneDark as shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
 
 const problem = {
@@ -40,7 +40,7 @@ watch(language, (lang) => {
 
 const extensions = computed(() => {
   const lang = languages[language.value];
-  console.log(lang);
+  // TODO: base extension pack (line wrap, etc...)
   const result = [shadCn];
   result.push(lang.extension() as any);
   return result;
@@ -53,7 +53,7 @@ const extensions = computed(() => {
     class="grid min-h-full min-w-full grid-cols-1 place-items-center gap-4 overflow-hidden md:grid-cols-8"
   >
     <!-- Problem  -->
-    <div class="h-full w-full py-4 pl-4 md:col-span-3">
+    <div class="h-full w-full px-4 py-4 md:col-span-3 md:pr-0">
       <Card class="h-full w-full">
         <CardHeader>
           <CardTitle>{{ problem.name }}</CardTitle>
@@ -85,27 +85,38 @@ const extensions = computed(() => {
     </div>
 
     <!-- Code editor -->
-    <div class="flex h-full w-full flex-col py-4 pr-4 md:col-span-5">
-      <div class="flex items-center justify-between p-2">
-        <Select :default-value="language" v-model="language">
-          <SelectTrigger class="max-w-fit">
-            <SelectValue class="px-2" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem
+    <div
+      class="md: flex h-full w-full flex-col overflow-hidden px-4 py-4 md:col-span-5 md:pl-0"
+    >
+      <div
+        class="flex items-center justify-between rounded-t-md border-b-2 bg-card px-3 py-2 shadow-md"
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            {{ language }}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem
               v-for="lang in Object.keys(languages)"
               :value="lang"
               :key="lang"
+              @click="language = lang"
             >
               {{ lang }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Button size="sm" variant="default"> Submit </Button>
       </div>
       <Codemirror
         :autofocus="true"
-        style="height: 100%; overflow-y: auto; padding: 4px"
+        style="
+          height: calc(100vh - 56px - 64px - 91px);
+          overflow-y: hidden;
+          padding: 5px;
+          border-radius: 0 0 6px 6px;
+          box-shadow: 4px;
+        "
         :extensions="extensions"
         v-model="code"
       />
