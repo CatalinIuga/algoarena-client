@@ -225,6 +225,7 @@ import { go } from "@codemirror/legacy-modes/mode/go";
 import { ruby } from "@codemirror/legacy-modes/mode/ruby";
 import { swift } from "@codemirror/legacy-modes/mode/swift";
 import { csharp } from "@replit/codemirror-lang-csharp";
+import {LanguageSupport } from "@codemirror/language";
 
 // C++: 52
 // C: 48
@@ -244,7 +245,7 @@ export const languages: {
   [key: string]: {
     id: number;
     name: string;
-    extension: () => any;
+    extension: () => LanguageSupport | StreamLanguage<any>;
     code: string;
   };
 } = {

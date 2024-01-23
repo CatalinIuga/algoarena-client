@@ -16,8 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { javascript } from "@codemirror/lang-javascript";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
@@ -33,9 +32,19 @@ const problem = {
 
 // changes based on selected language
 const language = ref("C++");
-const code = computed(() => languages[language.value].code);
+const code = ref(languages[language.value].code);
 
-const extensions = [javascript(), shadCn];
+watch(language, (lang) => {
+  code.value = languages[lang].code;
+});
+
+const extensions = computed(() => {
+  const lang = languages[language.value];
+  console.log(lang);
+  const result = [shadCn];
+  result.push(lang.extension() as any);
+  return result;
+});
 </script>
 
 <template>

@@ -1,5 +1,5 @@
-import { createTheme } from "thememirror";
 import { tags as t } from "@lezer/highlight";
+import { createTheme } from "thememirror";
 
 const colors = {
   background: "#0c0a09",
@@ -7,8 +7,8 @@ const colors = {
   caret: "#22c35d",
   selection: "#262626",
   lineHighlight: "#333131",
-  gutterBackground: "#0d0d0d",
-  gutterForeground: "#f0f0f0",
+  gutterBackground: "#0c0a09",
+  gutterForeground: "#939390",
 
   // comment/meta
   gray: "#939390",
@@ -25,7 +25,7 @@ const colors = {
   // functions
   teal: "#60a5fa",
   // variables
-  pink: "#f87171",
+  pink: "#f472b6",
   // invalid
   red: "#f87171",
   // operators
@@ -53,7 +53,15 @@ export const shadCn = createTheme({
       color: colors.purple,
     },
     {
-      tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
+      tag: t.typeName,
+      color: colors.blue,
+    },
+    {
+      tag: [t.name],
+      color: colors.purple,
+    },
+    {
+      tag: [t.deleted, t.character, t.propertyName, t.macroName],
       color: colors.pink,
     },
     {
@@ -117,7 +125,7 @@ export const shadCn = createTheme({
     {
       tag: t.heading,
       fontWeight: "bold",
-      color: colors.pink,
+      color: colors.red,
     },
     {
       tag: [t.atom, t.bool, t.special(t.variableName)],
