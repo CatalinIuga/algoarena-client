@@ -10,6 +10,7 @@ const colors = {
   gutterBackground: "#0c0a09",
   gutterForeground: "#939390",
 
+  // TODO FIX THIS COLORS
   // comment/meta
   gray: "#939390",
   // strings
@@ -23,7 +24,7 @@ const colors = {
   // types
   yellow: "#facc15",
   // functions
-  teal: "#60a5fa",
+  teal: "#22d3ee",
   // variables
   pink: "#f472b6",
   // invalid
@@ -53,15 +54,7 @@ export const shadCn = createTheme({
       color: colors.purple,
     },
     {
-      tag: t.typeName,
-      color: colors.blue,
-    },
-    {
-      tag: [t.name],
-      color: colors.purple,
-    },
-    {
-      tag: [t.deleted, t.character, t.propertyName, t.macroName],
+      tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
       color: colors.pink,
     },
     {
