@@ -3,8 +3,6 @@ import { Extension } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { tags as t } from "@lezer/highlight";
 
-// Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors
-
 const chalky = "#e5c07b",
   coral = "#e06c75",
   cyan = "#56b6c2",
@@ -16,8 +14,6 @@ const chalky = "#e5c07b",
   whiskey = "#d19a66",
   violet = "#c678dd",
   darkBackground = "#21252b",
-  // "#2c313a" -> highlithing this will break the selection scheme, so insted
-  // we use the same color as the background
   highlightBackground = "#2c313a",
   background = "#1c1917",
   tooltipBackground = "#353a42",
@@ -52,7 +48,6 @@ export const oneDarkTheme = EditorView.theme(
       backgroundColor: "#6199ff2f",
     },
 
-    // opacity: 0.4,
     ".cm-selectionMatch": { backgroundColor: "#aafe661a" },
 
     "&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket": {
@@ -97,7 +92,6 @@ export const oneDarkTheme = EditorView.theme(
   { dark: true },
 );
 
-/// The highlighting style for code in the One Dark theme.
 export const oneDarkHighlightStyle = HighlightStyle.define([
   { tag: t.keyword, color: violet },
   {

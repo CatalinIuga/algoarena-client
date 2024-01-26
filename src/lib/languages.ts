@@ -220,12 +220,11 @@ import { javascript } from "@codemirror/lang-javascript";
 import { php } from "@codemirror/lang-php";
 import { python } from "@codemirror/lang-python";
 import { rust } from "@codemirror/lang-rust";
-import { StreamLanguage } from "@codemirror/language";
+import { LanguageSupport, StreamLanguage } from "@codemirror/language";
 import { go } from "@codemirror/legacy-modes/mode/go";
 import { ruby } from "@codemirror/legacy-modes/mode/ruby";
 import { swift } from "@codemirror/legacy-modes/mode/swift";
 import { csharp } from "@replit/codemirror-lang-csharp";
-import {LanguageSupport } from "@codemirror/language";
 
 // C++: 52
 // C: 48
@@ -245,6 +244,7 @@ export const languages: {
   [key: string]: {
     id: number;
     name: string;
+    color: string; // tailwind css base color
     extension: () => LanguageSupport | StreamLanguage<any>;
     code: string;
   };
@@ -253,6 +253,7 @@ export const languages: {
     id: 52,
     name: "C++ (GCC 7.4.0)",
     extension: cpp,
+    color: "text-pink-500",
     code: `#include <iostream>
 using namespace std;
 
@@ -265,6 +266,7 @@ int main() {
     id: 48,
     name: "C (GCC 7.4.0)",
     extension: cpp,
+    color: "text-blue-500",
     code: `#include <stdio.h>
 
 int main() {
@@ -276,6 +278,7 @@ int main() {
     id: 51,
     name: "C# (Mono 6.6.0.161)",
     extension: csharp,
+    color: "text-purple-500",
     code: `using System;
 
 public class Program
@@ -291,6 +294,7 @@ public class Program
     id: 62,
     name: "Java (OpenJDK 13.0.1)",
     extension: java,
+    color: "text-red-500",
     code: `class Main {
   public static void main(String[] args) {
     System.out.println("Hello world!");
@@ -301,23 +305,27 @@ public class Program
     id: 70,
     name: "Python (2.7.17)",
     extension: python,
+    color: "text-cyan-500",
     code: `print "Hello World"`,
   },
   Python3: {
     id: 71,
     name: "Python (3.8.1)",
     extension: python,
+    color: "text-green-500",
     code: `print("Hello World")`,
   },
   Javascript: {
     id: 63,
     name: "JavaScript (Node.js 12.14.0)",
     extension: javascript,
+    color: "text-yellow-500",
     code: `console.log("Hello World")`,
   },
   Typescript: {
     id: 74,
     name: "TypeScript (3.7.4)",
+    color: "text-blue-500",
     extension: () => javascript({ typescript: true }),
     code: `console.log("Hello World")`,
   },
@@ -325,6 +333,7 @@ public class Program
     id: 68,
     name: "PHP (7.4.1)",
     extension: php,
+    color: "text-indigo-500",
     code: `<?php
 echo "Hello World";
 ?>`,
@@ -332,6 +341,7 @@ echo "Hello World";
   Swift: {
     id: 83,
     name: "Swift (5.2.3)",
+    color: "text-orange-500",
     extension: () => StreamLanguage.define(swift),
     code: `print("Hello World")`,
   },
@@ -339,6 +349,7 @@ echo "Hello World";
   Go: {
     id: 60,
     name: "Go (1.13.5)",
+    color: "text-cyan-500",
     extension: () => StreamLanguage.define(go),
     code: `package main
 
@@ -352,6 +363,7 @@ func main() {
   Ruby: {
     id: 72,
     name: "Ruby (2.7.0)",
+    color: "text-red-500",
     extension: () => StreamLanguage.define(ruby),
     code: `puts "Hello World"`,
   },
@@ -360,6 +372,7 @@ func main() {
     id: 73,
     name: "Rust (1.40.0)",
     extension: rust,
+    color: "text-orange-500",
     code: `fn main() {
     println!("Hello World");
 }`,
