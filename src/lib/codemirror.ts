@@ -29,6 +29,7 @@ export const oneDarkTheme = EditorView.theme(
     },
 
     ".cm-content": {
+      borderLeft: `1px solid ${stone + "20"}`,
       caretColor: cursor,
     },
 
