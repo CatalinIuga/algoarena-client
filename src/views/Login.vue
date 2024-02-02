@@ -10,11 +10,37 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { authStore } from "@/store";
+import { LoginRequest } from "@/types/auth";
+import { storeToRefs } from "pinia";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const store = authStore();
+const userId = storeToRefs(store).userId;
+
+const email = ref("");
+const password = ref("");
+
+const submit = async () => {
+  console.log(email.value, password.value);
+  const data: LoginRequest = {
+    email: email.value,
+    password: password.value,
+  };
+  await store.logIn(data);
+  await store.checkAuth();
+  if (userId.value) {
+    router.push("/");
+  }
+};
 </script>
 
 <template>
   <section
-    class="container flex justify-center w-[600px] py-10 [&>div]:w-full items-center"
+    class="container flex w-[600px] items-center justify-center py-10 [&>div]:w-full"
   >
     <!-- LOGIN INPUTS -->
     <Card class="">
@@ -27,16 +53,26 @@ import { Label } from "@/components/ui/label";
       <CardContent class="grid gap-4">
         <div class="grid gap-2">
           <Label for="email">Email</Label>
-          <Input id="email" type="email" placeholder="<your_email.com>" />
+          <Input
+            v-model="email"
+            id="email"
+            type="email"
+            placeholder="<your_email.com>"
+          />
         </div>
         <div class="grid gap-2">
           <Label for="password">Password</Label>
-          <Input id="password" type="password" placeholder="<your_password>" />
+          <Input
+            v-model="password"
+            id="password"
+            type="password"
+            placeholder="<your_password>"
+          />
         </div>
       </CardContent>
       <CardFooter>
-        <Button class="w-full"> Login </Button>
-        <div class="flex justify-center items-center mt-4">
+        <Button @click="submit" class="w-full">Login</Button>
+        <div class="mt-4 flex items-center justify-center">
           <span class="text-sm">Don't have an account?</span>
           <Button variant="link" as-child>
             <router-link to="/register"> Create an account </router-link>

@@ -1,4 +1,6 @@
+import { storeToRefs } from "pinia";
 import { createRouter, createWebHistory } from "vue-router";
+import { authStore } from "./store";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -33,6 +35,10 @@ export const router = createRouter({
       component: () => import("./views/Problem.vue"),
     },
     {
+      path: "/users",
+      component: () => import("./views/Users.vue"),
+    },
+    {
       // unmatched paths will redirect to 404
       path: "/:pathMatch(.*)*",
       component: () => import("./views/404.vue"),
@@ -41,15 +47,23 @@ export const router = createRouter({
 });
 
 // TODO: this for auth
-// router.beforeEach((to, from, next) => {
-//   // redirect to login page if not logged in and trying to access a restricted page
-//   const publicPages = ["/login", "/register", "/"];
-//   const authRequired = !publicPages.includes(to.path);
-//   const loggedIn = localStorage.getItem("user");
+router.beforeEach(async (to, _from, next) => {
+  // redirect to login page if not logged in and trying to access a restricted page
+  const publicPages = ["/login", "/register", "/"];
+  const store = authStore();
+  const userid = storeToRefs(store).userId;
 
-//   if (authRequired && !loggedIn) {
-//     return next("/login");
-//   }
+  const authRequired = !publicPages.includes(to.path);
+  await store.checkAuth();
 
-//   next();
-// });
+  if (authRequired && !userid.value) {
+    return next("/login");
+  } else if (
+    userid.value &&
+    (to.path === "/login" || to.path === "/register")
+  ) {
+    return next("/");
+  }
+
+  next();
+});
