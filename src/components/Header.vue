@@ -11,9 +11,8 @@ const { userId } = storeToRefs(store);
 const router = useRouter();
 const route = reactive(router.currentRoute.value);
 
-const logout = () => {
-  store.logOut();
-  router.push("/");
+const logout = async () => {
+  await store.signOut();
 };
 
 router.afterEach((to) => {
@@ -84,9 +83,9 @@ router.afterEach((to) => {
         <Button size="sm" class="mr-4" variant="default" as-child>
           <router-link to="/profile">Profile</router-link>
         </Button>
-        <Button @click="logout" size="sm" class="px-4" variant="secondary"
-          >Logout</Button
-        >
+        <Button @click="logout" size="sm" class="px-4" variant="secondary">
+          Logout
+        </Button>
       </div>
     </div>
   </header>

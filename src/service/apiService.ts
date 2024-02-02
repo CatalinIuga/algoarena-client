@@ -1,14 +1,9 @@
-import type {
-  AuthResponse,
-  LoginRequest,
-  RegisterRequest,
-} from "../types/auth";
+// service/authService.js
+import type { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
 
 const apiURL = import.meta.env.VITE_API_URL;
 
-export const register = async (
-  data: RegisterRequest,
-): Promise<AuthResponse> => {
+export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
   const response = await fetch(`${apiURL}/auth/register`, {
     method: "POST",
     headers: {
@@ -21,7 +16,7 @@ export const register = async (
     throw new Error("Failed to register");
   }
 
-  return (await response.json()) as AuthResponse;
+  return response.json();
 };
 
 export const login = async (data: LoginRequest): Promise<AuthResponse> => {
@@ -37,15 +32,10 @@ export const login = async (data: LoginRequest): Promise<AuthResponse> => {
     throw new Error("Failed to login");
   }
 
-  return (await response.json()) as AuthResponse;
+  return response.json();
 };
 
-export const check = async (): Promise<any> => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new Error("No token found");
-  }
-
+export const checkAuth = async (token: string): Promise<any> => {
   const response = await fetch(`${apiURL}/auth/check`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -56,5 +46,5 @@ export const check = async (): Promise<any> => {
     throw new Error("Failed to check auth");
   }
 
-  return await response.json();
+  return response.json();
 };

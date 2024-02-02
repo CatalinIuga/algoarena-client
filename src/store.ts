@@ -1,61 +1,94 @@
+// store/auth.js
 import { defineStore } from "pinia";
 import { ref, watch } from "vue";
-import { check, login, register } from "./service/apiService";
+import {
+  checkAuth as checkAuthApi,
+  login,
+  register,
+} from "./service/apiService";
 import { LoginRequest, RegisterRequest } from "./types/auth";
 
 export const authStore = defineStore("auth", () => {
-  const userId = ref<number>(); // User ID
-  const token = ref<string>(""); // JWT token
+  // JWT token
+  const token = ref<string>(localStorage.getItem("token") || "");
 
-  const logIn = async (loginData: LoginRequest) => {
+  // STATES
+  const userId = ref<number | null>();
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
+
+  const resetStates = () => {
+    userId.value = null;
+    isLoading.value = false;
+    error.value = null;
+  };
+
+  const signIn = async (loginData: LoginRequest) => {
+    resetStates();
+
     try {
+      isLoading.value = true;
       const response = await login(loginData);
       token.value = response.token;
-    } catch (error) {
-      console.error(error);
-      token.value = "";
+      await checkAuth();
+    } catch (err) {
+      error.value = "Failed to login";
+      console.error(err);
+    } finally {
+      isLoading.value = false;
     }
   };
 
   const checkAuth = async () => {
-    if (token.value === "") return;
+    if (!token.value) return;
+    resetStates();
+
     try {
-      const response = await check();
+      isLoading.value = true;
+      const response = await checkAuthApi(token.value);
       userId.value = response.id;
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      error.value = "Failed to check auth";
       userId.value = undefined;
       token.value = "";
+    } finally {
+      isLoading.value = false;
     }
-    console.log("Token changed to", token.value);
   };
 
   const signUp = async (registerData: RegisterRequest) => {
+    resetStates();
+
     try {
+      isLoading.value = true;
       const response = await register(registerData);
       token.value = response.token;
-    } catch (error) {
-      console.error(error);
-      token.value = "";
+      await checkAuth();
+    } catch (err) {
+      error.value = "Failed to register";
+      console.error(err);
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  const logOut = () => {
-    userId.value = undefined;
-    token.value = "bruh";
+  const signOut = async () => {
+    resetStates();
+    localStorage.removeItem("token");
+    window.location.href = "/";
   };
 
   watch(token, (newToken) => {
-    console.log("Token changed to", newToken);
-
     localStorage.setItem("token", newToken);
   });
 
   return {
     userId,
     token,
-    logIn,
-    logOut,
+    isLoading,
+    signIn,
+    signOut,
     signUp,
     checkAuth,
   };

@@ -30,7 +30,7 @@ const submit = async () => {
     email: email.value,
     password: password.value,
   };
-  await store.logIn(data);
+  await store.signIn(data);
   await store.checkAuth();
   if (userId.value) {
     router.push("/");
