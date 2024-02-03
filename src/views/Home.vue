@@ -37,10 +37,10 @@ const abouts = [
 <template>
   <!-- HOME WRAPPER -->
   <div>
-    <section id="about" class="container flex-1 flex items-center px-8">
+    <section id="about" class="container flex flex-1 items-center px-8">
       <!-- HERO -->
       <article
-        class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-0 lg:grid-cols-12 lg:py-16"
+        class="mx-auto grid max-w-screen-xl px-4 py-8 lg:grid-cols-12 lg:gap-0 lg:py-16"
       >
         <!-- HERO TEXT -->
         <div class="mr-auto place-self-center lg:col-span-7">
@@ -56,9 +56,9 @@ const abouts = [
             problem sets and compete with other users.
           </p>
           <!-- HERO ACTIONS -->
-          <div class="flex justify-center w-full mt-8 space-x-10">
+          <div class="mt-8 flex w-full justify-center space-x-10">
             <Button as-child>
-              <router-link to="/register">Get Started</router-link>
+              <router-link to="/signup">Get Started</router-link>
             </Button>
             <Button variant="secondary" as-child>
               <a href="#about">Learn More</a>
@@ -67,9 +67,9 @@ const abouts = [
         </div>
 
         <!-- HERO IMAGE -->
-        <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+        <div class="hidden lg:col-span-5 lg:mt-0 lg:flex">
           <img
-            class="w-full h-auto max-w-lg"
+            class="h-auto w-full max-w-lg"
             src="/hero.svg"
             alt="Code thinking"
           />
@@ -79,9 +79,9 @@ const abouts = [
 
     <!-- PROBLEM SETS -->
     <section class="container flex-1 px-8">
-      <h2 class="text-3xl font-extrabold py-5 px-4">Featured Problem Sets</h2>
+      <h2 class="px-4 py-5 text-3xl font-extrabold">Featured Problem Sets</h2>
       <!-- FEATURED PROBLEM SETS -->
-      <article class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <article class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="i in 9" :key="i">
           <CardHeader>
             <CardTitle>Problem Set {{ i }}</CardTitle>
@@ -102,13 +102,13 @@ const abouts = [
     <!-- LEARN MORE SECTION -->
     <section
       id="about"
-      class="container flex flex-col gap-4 lg:flex-row mt-10 px-8 py-5"
+      class="container mt-10 flex flex-col gap-4 px-8 py-5 lg:flex-row"
     >
       <!-- ABOUT ALGOARENA -->
-      <article class="w-full lg:w-1/2 p-2">
+      <article class="w-full p-2 lg:w-1/2">
         <Button
           variant="outline"
-          class="font-extrabold hover:cursor-default text-primary text-xl"
+          class="text-xl font-extrabold text-primary hover:cursor-default"
         >
           About us:
         </Button>
@@ -129,7 +129,7 @@ const abouts = [
       </article>
 
       <!-- PROFESOR USAGE PART -->
-      <Card class="m-4 h-fit lg:w-1/2 bg-transparent">
+      <Card class="m-4 h-fit bg-transparent lg:w-1/2">
         <CardHeader>
           <CardTitle>Profesor Usage</CardTitle>
         </CardHeader>
@@ -140,14 +140,14 @@ const abouts = [
             leaderboard where you can see the progress of your students.
           </CardDescription>
         </CardContent>
-        <CardFooter class="flex items-center gap-10 justify-center">
+        <CardFooter class="flex items-center justify-center gap-10">
           <!-- PROBLEMSETS -->
           <Button variant="secondary" as-child>
             <router-link to="/problemsets"> View Problem Sets </router-link>
           </Button>
           <!-- CREATE ACCOUNT -->
           <Button variant="default" as-child>
-            <router-link to="/register">Create Account</router-link>
+            <router-link to="/signup">Create Account</router-link>
           </Button>
         </CardFooter>
       </Card>

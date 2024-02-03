@@ -49,7 +49,7 @@ export const router = createRouter({
 // TODO: this for auth
 router.beforeEach(async (to, _from, next) => {
   // redirect to login page if not logged in and trying to access a restricted page
-  const publicPages = ["/login", "/register", "/"];
+  const publicPages = ["/login", "/signup", "/"];
   const store = authStore();
   const userid = storeToRefs(store).userId;
 
@@ -58,10 +58,7 @@ router.beforeEach(async (to, _from, next) => {
 
   if (authRequired && !userid.value) {
     return next("/login");
-  } else if (
-    userid.value &&
-    (to.path === "/login" || to.path === "/register")
-  ) {
+  } else if (userid.value && (to.path === "/login" || to.path === "/signup")) {
     return next("/");
   }
 

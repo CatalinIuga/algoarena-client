@@ -16,7 +16,6 @@ const logout = async () => {
   await store.signOut();
 };
 
-console.log(userId);
 
 router.afterEach((to) => {
   route.path = to.path;

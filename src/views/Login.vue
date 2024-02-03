@@ -77,7 +77,7 @@ const submit = async () => {
         <div class="mt-4 flex items-center justify-center">
           <span class="text-sm">Don't have an account?</span>
           <Button variant="link" as-child>
-            <router-link to="/register"> Create an account </router-link>
+            <router-link to="/signup"> Create an account </router-link>
           </Button>
         </div>
       </CardFooter>

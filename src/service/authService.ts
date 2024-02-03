@@ -1,9 +1,14 @@
 // service/authService.js
-import type { AuthResponse, LoginRequest, RegisterRequest } from "../types/auth";
+import type {
+  AuthResponse,
+  LoginRequest,
+  RegisterRequest,
+} from "../types/auth";
+import { apiURL } from "./config";
 
-const apiURL = import.meta.env.VITE_API_URL;
-
-export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
+export const register = async (
+  data: RegisterRequest,
+): Promise<AuthResponse> => {
   const response = await fetch(`${apiURL}/auth/register`, {
     method: "POST",
     headers: {

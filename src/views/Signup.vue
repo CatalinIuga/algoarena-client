@@ -12,9 +12,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authStore } from "@/store";
 import { RegisterRequest } from "@/types/auth";
+import { storeToRefs } from "pinia";
 import { ref } from "vue";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const store = authStore();
+const { userId, isLoading } = storeToRefs(store);
 
 const username = ref("");
 const email = ref("");
@@ -30,6 +35,9 @@ const submit = async () => {
   };
   await store.signUp(data);
   await store.checkAuth();
+  if (userId.value) {
+    router.push("/");
+  }
 };
 </script>
 
@@ -76,7 +84,9 @@ const submit = async () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button @click="submit" class="w-full">Create account</Button>
+        <Button @click="submit" class="w-full">
+          {{ isLoading ? "Loading..." : "Create account" }}
+        </Button>
         <div class="mt-4 flex items-center justify-center">
           <span class="text-sm">Already have an account?</span>
           <Button variant="link" as-child>

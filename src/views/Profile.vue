@@ -40,12 +40,52 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getProfile } from "@/service/userService";
+import { authStore } from "@/store";
+import { ProfileResponse } from "@/types/user";
+import { storeToRefs } from "pinia";
+import { onMounted, ref } from "vue";
 
-import { ref } from "vue";
+const store = authStore();
+const { userId, token } = storeToRefs(store);
 
-// On mont we will fetch the user data based on the id stored in the store
-const user = ref({ name: "test", email: "test@email.com" });
-const image = ref("https://picsum.photos/300/300");
+const profile = ref<ProfileResponse>({
+  id: 0,
+  email: "",
+  avatar: "",
+  createdAt: "",
+  role: "",
+  username: "",
+});
+
+const usernameInput = ref("");
+const emailInput = ref("");
+const avatarInput = ref<File>();
+const passwordInput = ref("");
+const newPasswordInput = ref("");
+
+onMounted(async () => {
+  try {
+    profile.value = await getProfile(token.value, userId.value);
+    usernameInput.value = profile.value.username;
+    emailInput.value = profile.value.email;
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+const editProfile = async () => {
+  console.log(usernameInput.value, emailInput.value, avatarInput.value);
+};
+
+const changePassword = async () => {
+  console.log(passwordInput.value, newPasswordInput.value);
+};
+
+const deleteAccount = async () => {
+  console.log("Deleting account...");
+  await store.signOut();
+};
 
 const submissions = ref([
   {
@@ -112,20 +152,22 @@ const submissions = ref([
 </script>
 
 <template>
-  <div class="flex flex-col md:grid grid-cols-7 gap-5 flex-1 p-5">
+  <div class="flex flex-1 grid-cols-7 flex-col gap-5 p-5 md:grid">
     <!-- User data section -->
-    <section class="flex flex-col col-span-2 gap-2">
+    <section class="col-span-2 flex flex-col gap-2">
       <Card>
         <CardHeader class="items-center gap-3">
           <h1 class="text-2xl font-bold">Profile</h1>
           <Avatar class="size-20">
-            <AvatarImage :src="image" />
-            <AvatarFallback :name="user.name + '.jpg'" />
+            <AvatarImage :src="profile.avatar" />
+            <AvatarFallback
+              :name="`https://api.dicebear.com/7.x/initials/svg?seed=${profile.username}`"
+            />
           </Avatar>
-          <CardTitle class="text-primary font-extrabold">{{
-            user.name
+          <CardTitle class="font-extrabold text-primary">{{
+            profile.username
           }}</CardTitle>
-          <CardDescription>{{ user.email }}</CardDescription>
+          <CardDescription>{{ profile.email }}</CardDescription>
         </CardHeader>
 
         <CardContent class="flex flex-col gap-5">
@@ -148,6 +190,7 @@ const submissions = ref([
                   <Input
                     type="file"
                     id="avatar"
+                    @input="avatarInput = $event.target.files[0]"
                     accept="
                       image/png,
                       image/jpeg,
@@ -155,20 +198,26 @@ const submissions = ref([
                       image/gif,
                       image/svg+xml
                       "
-                    class="file:text-primary/80 col-span-3"
+                    class="col-span-3 file:text-primary/80"
                   />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                   <Label for="name" class="text-right">Username</Label>
-                  <Input id="name" :value="user.name" class="col-span-3" />
+                  <Input id="name" v-model="usernameInput" class="col-span-3" />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                   <Label for="username" class="text-right">Email</Label>
-                  <Input id="username" :value="user.email" class="col-span-3" />
+                  <Input
+                    id="username"
+                    v-model="emailInput"
+                    class="col-span-3"
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button class="w-full" type="submit">Save changes</Button>
+                <Button class="w-full" @click="editProfile" type="submit"
+                  >Save changes</Button
+                >
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -190,15 +239,27 @@ const submissions = ref([
               <div class="grid gap-4 py-4">
                 <div class="grid grid-cols-4 items-center gap-4">
                   <Label for="password" class="text-right">Password</Label>
-                  <Input id="password" type="password" class="col-span-3" />
+                  <Input
+                    v-model="passwordInput"
+                    id="password"
+                    type="password"
+                    class="col-span-3"
+                  />
                 </div>
                 <div class="grid grid-cols-4 items-center gap-4">
                   <Label for="password" class="text-right">New password</Label>
-                  <Input id="new_password" type="password" class="col-span-3" />
+                  <Input
+                    v-model="newPasswordInput"
+                    id="new_password"
+                    type="password"
+                    class="col-span-3"
+                  />
                 </div>
               </div>
               <DialogFooter>
-                <Button class="w-full" type="submit">Save changes</Button>
+                <Button @click="changePassword" class="w-full" type="submit"
+                  >Save changes</Button
+                >
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -223,6 +284,7 @@ const submissions = ref([
               <AlertDialogFooter>
                 <AlertDialogCancel class="w-full">Cancel</AlertDialogCancel>
                 <AlertDialogAction
+                  @click="deleteAccount"
                   class="w-full bg-destructive text-destructive-foreground hover:bg-destructive/80"
                 >
                   Delete account
@@ -235,7 +297,7 @@ const submissions = ref([
     </section>
 
     <!-- User submissions section -->
-    <section class="flex col-span-5 flex-col gap-2">
+    <section class="col-span-5 flex flex-col gap-2">
       <Card>
         <CardHeader class="items-center">
           <CardTitle>Submissions</CardTitle>

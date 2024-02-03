@@ -5,7 +5,7 @@ import {
   checkAuth as checkAuthApi,
   login,
   register,
-} from "./service/apiService";
+} from "./service/authService";
 import { LoginRequest, RegisterRequest } from "./types/auth";
 
 export const authStore = defineStore("auth", () => {
