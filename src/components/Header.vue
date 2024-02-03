@@ -6,7 +6,8 @@ import { reactive } from "vue";
 import { useRouter } from "vue-router";
 
 const store = authStore();
-const { userId } = storeToRefs(store);
+
+const { userId, isLoading } = storeToRefs(store);
 
 const router = useRouter();
 const route = reactive(router.currentRoute.value);
@@ -14,6 +15,8 @@ const route = reactive(router.currentRoute.value);
 const logout = async () => {
   await store.signOut();
 };
+
+console.log(userId);
 
 router.afterEach((to) => {
   route.path = to.path;
@@ -68,22 +71,46 @@ router.afterEach((to) => {
         </div>
       </section>
 
+      <div v-if="isLoading" id="skeleton" class="">
+        <div class="flex items-center">
+          <Button
+            size="sm"
+            class="mr-4 w-[82px] px-7 text-transparent"
+            variant="default"
+          >
+            Profile
+          </Button>
+          <Button
+            size="sm"
+            variant="secondary"
+            class="w-[82px] text-transparent"
+          >
+            Logout
+          </Button>
+        </div>
+      </div>
+
       <!-- AUTH SECTION -->
-      <div v-if="!userId" class="flex items-center">
-        <Button class="mr-4 px-7" variant="default" as-child>
+      <div v-else-if="!userId" class="flex items-center">
+        <Button size="sm" class="mr-4 w-[82px]" variant="default" as-child>
           <router-link to="/login">Login</router-link>
         </Button>
-        <Button variant="secondary" as-child>
-          <router-link to="/register">Register</router-link>
+        <Button size="sm" variant="secondary" class="w-[82px]" as-child>
+          <router-link to="/signup">Signup</router-link>
         </Button>
       </div>
 
       <!-- USER SECTION -->
-      <div v-else class="flex items-center">
-        <Button size="sm" class="mr-4" variant="default" as-child>
+      <div v-else="userId" class="flex items-center">
+        <Button size="sm" class="mr-4 w-[82px]" variant="default" as-child>
           <router-link to="/profile">Profile</router-link>
         </Button>
-        <Button @click="logout" size="sm" class="px-4" variant="secondary">
+        <Button
+          @click="logout"
+          size="sm"
+          class="w-[82px] px-4"
+          variant="secondary"
+        >
           Logout
         </Button>
       </div>

@@ -129,10 +129,12 @@ const dummy_problems = [
 </script>
 
 <template>
-  <div class="flex flex-1 grid-cols-7 flex-col gap-5 p-5 md:grid">
+  <div
+    class="flex flex-1 grid-cols-1 flex-col gap-5 p-5 md:grid md:grid-cols-7"
+  >
     <!-- Filters section -->
     <!-- name, dificulty, status, category -->
-    <section class="col-span-2 flex flex-col gap-2">
+    <section class="flex flex-col gap-2 md:col-span-2">
       <Card>
         <CardHeader class="items-center gap-3">
           <CardTitle>Filters</CardTitle>
@@ -208,7 +210,7 @@ const dummy_problems = [
     </section>
 
     <!-- Problem card grid section -->
-    <section class="col-span-5 grid grid-cols-3 gap-4">
+    <section class="grid grid-cols-1 gap-4 md:col-span-5 md:grid-cols-3">
       <Card v-for="problem in dummy_problems.slice(0, 9)" :key="problem.id">
         <CardHeader class="items-center">
           <CardTitle>{{ problem.name }}</CardTitle>

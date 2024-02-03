@@ -19,7 +19,7 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const store = authStore();
-const userId = storeToRefs(store).userId;
+const { userId, isLoading } = storeToRefs(store);
 
 const email = ref("");
 const password = ref("");
@@ -71,7 +71,9 @@ const submit = async () => {
         </div>
       </CardContent>
       <CardFooter>
-        <Button @click="submit" class="w-full">Login</Button>
+        <Button @click="submit" class="w-full">
+          {{ isLoading ? "Loading..." : "Login" }}
+        </Button>
         <div class="mt-4 flex items-center justify-center">
           <span class="text-sm">Don't have an account?</span>
           <Button variant="link" as-child>

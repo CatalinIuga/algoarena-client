@@ -15,6 +15,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { ViewUpdate } from "@codemirror/view";
 import { computed, reactive, ref, watch } from "vue";
@@ -34,6 +40,7 @@ const problem = {
  
   `,
   difficulty: "Easy",
+  problemset: "LeetCode",
   exampleInput: "1,2,3,4,5",
   exampleOutput: "1,2,3,4,5",
 };
@@ -86,15 +93,21 @@ const submit = (_e: Event) => {
   >
     <!-- Problem  -->
     <div class="w-full p-4 md:col-span-3 md:h-[85vh] md:pr-0">
-      <Card class="max-h-full w-full justify-between overflow-y-scroll p-2">
-        <CardHeader class="gap-2">
+      <Card class="max-h-full w-full justify-between overflow-y-scroll">
+        <CardHeader class="gap-2 py-4">
           <CardTitle class="text-2xl font-bold">{{ problem.name }}</CardTitle>
-          <CardDescription class="text-sm">
+          <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
             <!-- TODO: link to profile -->
             <span class="font-semibold text-primary">{{ problem.author }}</span>
           </CardDescription>
-          <CardDescription class="text-sm">
+          <CardDescription class="px-2 text-sm">
+            <span class="font-semibold">Problemset: </span>
+            <span class="text-sm text-foreground/80 underline">
+              {{ problem.problemset }}
+            </span>
+          </CardDescription>
+          <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Categories: </span>
             <span
               v-for="category in problem.categories"
@@ -104,7 +117,7 @@ const submit = (_e: Event) => {
               {{ category }}
             </span>
           </CardDescription>
-          <CardDescription class="text-sm">
+          <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Difficulty: </span>
             <span
               class="rounded-full px-3 py-1 text-xs font-semibold"
@@ -119,13 +132,17 @@ const submit = (_e: Event) => {
         </CardHeader>
         <CardContent class="px-4 pb-2 pt-0">
           <div class="mb-4">
-            <h2 class="text-lg underline">Description:</h2>
-            <span class="text-foreground/80"> {{ problem.description }}</span>
+            <h2 class="break-words pb-2 text-lg underline">Description:</h2>
+            <div class="px-2 text-foreground/80">
+              <div class="overflow-hidden">
+                {{ problem.description }}
+              </div>
+            </div>
           </div>
           <div class="text-muted-foreground">
-            <h2 class="text-lg text-foreground underline">Example:</h2>
-            <p>Input: {{ problem.exampleInput }}</p>
-            <p>Output: {{ problem.exampleOutput }}</p>
+            <h2 class="pb-2 text-lg text-foreground underline">Example:</h2>
+            <p class="px-2">Input: {{ problem.exampleInput }}</p>
+            <p class="px-2">Output: {{ problem.exampleOutput }}</p>
           </div>
         </CardContent>
       </Card>
@@ -187,29 +204,47 @@ const submit = (_e: Event) => {
           />
           <!-- Editor stats -->
           <div
-            class="mb-2 flex items-center justify-end gap-4 rounded-b-md border-x-[1px] border-b-[1px] border-[#a2a2a2] border-opacity-10 px-4 text-xs text-[#a2a2a2] text-opacity-90"
+            class="mb-2 flex items-center justify-between gap-2 rounded-b-md border-x-[1px] border-b-[1px] border-[#a2a2a2] border-opacity-10 px-4 text-xs text-[#a2a2a2] text-opacity-90"
           >
-            <div class="flex p-1">
-              <span class="font-semibold">Spaces: </span>
-              <!-- this should probably be an input but hey it works -->
-              <span class="">2</span>
-            </div>
-            <div class="flex p-1">
-              <span class="font-semibold">Length: </span>
-              <!-- this should probably be an input but hey it works -->
-              <span class="">{{ state.length }}</span>
-            </div>
-            <div class="flex">
-              <span class="font-semibold">Lines: </span>
-              <span class="">{{ state.lines }}</span>
-            </div>
-            <div class="flex p-1">
-              <span class="font-semibold">Cursor: </span>
-              <span class="">{{ state.cursor }}</span>
-            </div>
-            <div class="flex">
-              <span class="font-semibold">Selected: </span>
-              <span class="">{{ state.selected }}</span>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <div
+                    class="w-30 overflow-hidden text-ellipsis whitespace-nowrap p-1"
+                  >
+                    {{ languages[language].name }}
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div class="rounded-md bg-card p-2 text-sm">
+                    {{ languages[language].name }}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            <div class="flex items-center justify-end gap-3">
+              <div class="flex p-1">
+                <span class="font-semibold">Spaces: </span>
+                <!-- this should probably be an input but hey it works -->
+                <span class="">2</span>
+              </div>
+              <div class="flex p-1">
+                <span class="font-semibold">Length: </span>
+                <!-- this should probably be an input but hey it works -->
+                <span class="">{{ state.length }}</span>
+              </div>
+              <div class="flex">
+                <span class="font-semibold">Lines: </span>
+                <span class="">{{ state.lines }}</span>
+              </div>
+              <div class="flex p-1">
+                <span class="font-semibold">Cursor: </span>
+                <span class="">{{ state.cursor }}</span>
+              </div>
+              <div class="flex">
+                <span class="font-semibold">Selected: </span>
+                <span class="">{{ state.selected }}</span>
+              </div>
             </div>
           </div>
         </CardContent>

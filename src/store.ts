@@ -13,12 +13,12 @@ export const authStore = defineStore("auth", () => {
   const token = ref<string>(localStorage.getItem("token") || "");
 
   // STATES
-  const userId = ref<number | null>();
+  const userId = ref<number>();
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
   const resetStates = () => {
-    userId.value = null;
+    userId.value = undefined;
     isLoading.value = false;
     error.value = null;
   };
@@ -28,6 +28,7 @@ export const authStore = defineStore("auth", () => {
 
     try {
       isLoading.value = true;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const response = await login(loginData);
       token.value = response.token;
       await checkAuth();
