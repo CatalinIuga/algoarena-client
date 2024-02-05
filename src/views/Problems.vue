@@ -30,102 +30,19 @@ import {
   PaginationPrev,
 } from "@/components/ui/pagination";
 
+import { getProblems } from "@/service/problemService";
+import { ProblemResponse } from "@/types/problem";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
+
 const router = useRouter();
 // @ts-expect-error
 const id = router.currentRoute.value.params.id;
+const problems = ref<ProblemResponse[]>([]);
 
-const dummy_problems = [
-  {
-    id: 1,
-    name: "Problem 1",
-    category: "array",
-    difficulty: "easy",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "solved",
-  },
-  {
-    id: 2,
-    name: "Problem 2",
-    category: "array",
-    difficulty: "medium",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit.",
-    status: "unsolved",
-  },
-  {
-    id: 3,
-    name: "Problem 3",
-    category: "array",
-    difficulty: "hard",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "unsolved",
-  },
-  {
-    id: 4,
-    name: "Problem 4",
-    category: "array",
-    difficulty: "easy",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "solved",
-  },
-  {
-    id: 5,
-    name: "Problem 5",
-    category: "array",
-    difficulty: "medium",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "unsolved",
-  },
-  {
-    id: 6,
-    name: "Problem 6",
-    category: "array",
-    difficulty: "hard",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "unsolved",
-  },
-  {
-    id: 7,
-    name: "Problem 7",
-    category: "array",
-    difficulty: "easy",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "solved",
-  },
-  {
-    id: 8,
-    name: "Problem 8",
-    category: "array",
-    difficulty: "medium",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "unsolved",
-  },
-  {
-    id: 9,
-    name: "Problem 9",
-    category: "array",
-    difficulty: "hard",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "unsolved",
-  },
-  {
-    id: 10,
-    name: "Problem 10",
-    category: "array",
-    difficulty: "easy",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, voluptatum.",
-    status: "solved",
-  },
-];
+onMounted(async () => {
+  problems.value = await getProblems();
+});
 </script>
 
 <template>
@@ -211,7 +128,7 @@ const dummy_problems = [
 
     <!-- Problem card grid section -->
     <section class="grid grid-cols-1 gap-4 md:col-span-5 md:grid-cols-3">
-      <Card v-for="problem in dummy_problems.slice(0, 9)" :key="problem.id">
+      <Card v-for="problem in problems.slice(0, 9)" :key="problem.id">
         <CardHeader class="items-center">
           <CardTitle>{{ problem.name }}</CardTitle>
         </CardHeader>
@@ -220,15 +137,22 @@ const dummy_problems = [
             <Badge
               variant="default"
               :class="[
-                problem.status === 'solved'
-                  ? ''
-                  : 'bg-red-500 hover:bg-red-500/80',
+                Math.random() > 0.5 ? '' : 'bg-red-500 hover:bg-red-500/80',
               ]"
               class="mr-2"
-              >{{ problem.status }}</Badge
+              >{{ "status" }}</Badge
             >
-            <Badge variant="outline" class="mr-2">{{ problem.category }}</Badge>
-            <Badge variant="secondary">{{ problem.difficulty }}</Badge>
+            <Badge
+              v-for="category in problem.categories"
+              :key="category.id"
+              variant="outline"
+              class="mr-2"
+            >
+              {{ category.categoryName }}</Badge
+            >
+            <Badge class="capitalize" variant="secondary">
+              {{ problem.difficulty.toLowerCase() }}
+            </Badge>
           </div>
           <p class="min-w-0 text-ellipsis text-foreground/70">
             {{ problem.description.slice(0, 50) }}
@@ -236,7 +160,7 @@ const dummy_problems = [
         </CardContent>
         <CardFooter class="flex justify-end">
           <Button variant="default" as-child>
-            <router-link :to="'/problems/' + problem.id"> View </router-link>
+            <router-link :to="'/problems/' + problem.id">View</router-link>
           </Button>
         </CardFooter>
       </Card>

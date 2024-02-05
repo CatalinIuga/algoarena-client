@@ -31,7 +31,11 @@ export const router = createRouter({
       component: () => import("./views/ProblemSet.vue"),
     },
     {
-      path: "/problemsets/:id/problem/:problemId",
+      path: "/problems",
+      component: () => import("./views/Problems.vue"),
+    },
+    {
+      path: "/problems/:id",
       component: () => import("./views/Problem.vue"),
     },
     {

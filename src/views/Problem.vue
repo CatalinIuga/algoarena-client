@@ -22,28 +22,29 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { getProblem } from "@/service/problemService";
+import { ProblemResponse } from "@/types/problem";
 import { ViewUpdate } from "@codemirror/view";
-import { computed, reactive, ref, watch } from "vue";
+import { computed, onMounted, reactive, ref, watch } from "vue";
 import { Codemirror } from "vue-codemirror";
+import { useRouter } from "vue-router";
 import { oneDark as shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
 
-const problem = {
-  name: "Problem 1",
-  author: "Shadcn",
-  categories: ["Array", "String"],
-  description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-  tincidunt, nisl quis aliquam lacinia, nunc nulla aliquet ipsum, vitae
-  aliquam nunc nisl quis nunc. Nulla facilisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed incidunt, nisl quis aliquam lacinia, nunc nulla aliquet ipsum, vitae.Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-  tincidunt, nisl quis aliquam lacinia, nunc nulla aliquet ipsum, vitae
-  aliquam nunc nisl quis nunc. Nulla facilisi. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed incidunt, nisl quis aliquam lacinia, nunc nulla aliquet ipsum, vitae.
- 
-  `,
-  difficulty: "Easy",
-  problemset: "LeetCode",
-  exampleInput: "1,2,3,4,5",
-  exampleOutput: "1,2,3,4,5",
-};
+const router = useRouter();
+
+const problem = ref<ProblemResponse>();
+const id = router.currentRoute.value.params.id;
+console.log(id);
+
+onMounted(async () => {
+  problem.value = await getProblem(id as string);
+  console.log(problem.value);
+
+  if (!problem.value) {
+    router.push("/problems");
+  }
+});
 
 // changes based on selected language
 const language = ref("C++");
@@ -68,17 +69,14 @@ const extensions = computed(() => {
 });
 
 const handleStateUpdate = (viewUpdate: ViewUpdate) => {
-  // selected
   const ranges = viewUpdate.state.selection.ranges;
   state.selected = ranges.reduce(
     (plus, range) => plus + range.to - range.from,
     0,
   );
   state.cursor = ranges[0].anchor;
-  // length
   state.length = viewUpdate.state.doc.length;
   state.lines = viewUpdate.state.doc.lines;
-  // log('viewUpdate', viewUpdate)
 };
 
 const submit = (_e: Event) => {
@@ -89,6 +87,7 @@ const submit = (_e: Event) => {
 <template>
   <!-- Main wrapper -->
   <div
+    v-if="problem !== undefined"
     class="grid h-full w-full grid-cols-1 place-items-start gap-4 overflow-hidden md:grid-cols-8"
   >
     <!-- Problem  -->
@@ -99,34 +98,32 @@ const submit = (_e: Event) => {
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
             <!-- TODO: link to profile -->
-            <span class="font-semibold text-primary">{{ problem.author }}</span>
-          </CardDescription>
-          <CardDescription class="px-2 text-sm">
-            <span class="font-semibold">Problemset: </span>
-            <span class="text-sm text-foreground/80 underline">
-              {{ problem.problemset }}
-            </span>
+            <span class="font-semibold text-primary">{{
+              problem.author.username
+            }}</span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Categories: </span>
             <span
               v-for="category in problem.categories"
-              :key="category"
+              :key="category.id"
               class="mr-2 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-800"
             >
-              {{ category }}
+              {{ category.categoryName }}
             </span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Difficulty: </span>
             <span
-              class="rounded-full px-3 py-1 text-xs font-semibold"
-              :class="{
-                'bg-green-500 text-green-50': problem.difficulty === 'Easy',
-                'bg-yellow-500 text-yellow-50': problem.difficulty === 'Medium',
-                'bg-red-500 text-red-50': problem.difficulty === 'Hard',
-              }"
-              >{{ problem.difficulty }}</span
+              class="rounded-full px-3 py-1 text-xs font-semibold capitalize text-foreground"
+              :class="
+                problem.difficulty === 'EASY'
+                  ? 'bg-green-500'
+                  : problem.difficulty === 'MEDIUM'
+                    ? 'bg-orange-500'
+                    : 'bg-red-500'
+              "
+              >{{ problem.difficulty.toLowerCase() }}</span
             >
           </CardDescription>
         </CardHeader>
@@ -141,8 +138,8 @@ const submit = (_e: Event) => {
           </div>
           <div class="text-muted-foreground">
             <h2 class="pb-2 text-lg text-foreground underline">Example:</h2>
-            <p class="px-2">Input: {{ problem.exampleInput }}</p>
-            <p class="px-2">Output: {{ problem.exampleOutput }}</p>
+            <p class="px-2">Input: bing</p>
+            <p class="px-2">Output: bong</p>
           </div>
         </CardContent>
       </Card>
@@ -153,7 +150,7 @@ const submit = (_e: Event) => {
       class="h-full w-full flex-col overflow-hidden px-4 py-4 md:col-span-5 md:flex md:pl-0"
     >
       <Card class="h-full w-full pb-1">
-        <CardHeader class="px-4 py-0">
+        <CardHeader class="px-4 py-1">
           <div class="flex items-center justify-between rounded-t-md py-1">
             <div class="flex items-center gap-2 text-sm">
               <span class="font-semibold">Language: </span>
@@ -192,7 +189,7 @@ const submit = (_e: Event) => {
             @update="handleStateUpdate"
             :autofocus="true"
             style="
-              height: calc(79vh - 4.5rem);
+              height: calc(79vh - 5rem);
               overflow-y: hidden;
               outline: none !important;
               border-radius: 4px 4px 0 0;

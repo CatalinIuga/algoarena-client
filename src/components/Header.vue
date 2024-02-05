@@ -16,7 +16,6 @@ const logout = async () => {
   await store.signOut();
 };
 
-
 router.afterEach((to) => {
   route.path = to.path;
 });
@@ -59,13 +58,13 @@ router.afterEach((to) => {
             variant="outline"
             class="items-center"
             :class="[
-              route.path === '/leaderboards'
+              route.path === '/problems'
                 ? 'hover:text-primaru/80 text-primary'
                 : 'text-foreground/70',
             ]"
             as-child
           >
-            <router-link to="/leaderboards">Leaderboards</router-link>
+            <router-link to="/problems">Problems</router-link>
           </Button>
         </div>
       </section>

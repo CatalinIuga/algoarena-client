@@ -24,7 +24,7 @@ const abouts = [
   {
     title: "How to use AlgoArena?",
     content:
-      "You can use AlgoArena as a student or as a professor. If you are a student, you can solve problems from various problem sets and compete with other users. If you are a professor, you can create your own problem sets and assign them to your students. Each problem will also have a leaderboard where you can see the progress of your students.",
+      "You can use AlgoArena to practice your coding skills and improve your problem-solving abilities. Great way to prepare for coding interviews and competitive programming contests. ",
   },
   {
     title: "What tech stack does AlgoArena use?",
@@ -53,7 +53,7 @@ const abouts = [
           <p class="mt-4 text-lg text-foreground/80">
             AlgoArena is a platform for practicing coding skills. It is a
             community-driven platform, where you can solve problems from various
-            problem sets and compete with other users.
+            problem sets.
           </p>
           <!-- HERO ACTIONS -->
           <div class="mt-8 flex w-full justify-center space-x-10">
@@ -136,8 +136,8 @@ const abouts = [
         <CardContent>
           <CardDescription>
             If you are a professor, you can create your own problem sets and ask
-            your students to solve them. Each problem will also have a
-            leaderboard where you can see the progress of your students.
+            your students to solve them. The platform will check the solutions
+            and give students the results.
           </CardDescription>
         </CardContent>
         <CardFooter class="flex items-center justify-center gap-10">
