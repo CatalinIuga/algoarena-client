@@ -60,9 +60,6 @@ const abouts = [
             <Button as-child>
               <router-link to="/signup">Get Started</router-link>
             </Button>
-            <Button variant="secondary" as-child>
-              <a href="#about">Learn More</a>
-            </Button>
           </div>
         </div>
 
