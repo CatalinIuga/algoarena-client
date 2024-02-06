@@ -35,7 +35,6 @@ const router = useRouter();
 
 const problem = ref<ProblemResponse>();
 const id = router.currentRoute.value.params.id;
-console.log(id);
 
 onMounted(async () => {
   problem.value = await getProblem(id as string);

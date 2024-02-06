@@ -19,7 +19,7 @@ const abouts = [
   {
     title: "What is AlgoArena?",
     content:
-      "AlgoArena is a platform for practicing coding skills. It is a community-driven platform, where you can solve problems from various problem sets and compete with other users.",
+      "AlgoArena is a platform for practicing coding skills. It is a community-driven platform, where you can solve problems from different categories.",
   },
   {
     title: "How to use AlgoArena?",
@@ -52,13 +52,16 @@ const abouts = [
           </h1>
           <p class="mt-4 text-lg text-foreground/80">
             AlgoArena is a platform for practicing coding skills. It is a
-            community-driven platform, where you can solve problems from various
-            problem sets.
+            community-driven platform, where you can solve problems from
+            different categories.
           </p>
           <!-- HERO ACTIONS -->
           <div class="mt-8 flex w-full justify-center space-x-10">
             <Button as-child>
               <router-link to="/signup">Get Started</router-link>
+            </Button>
+            <Button variant="secondary" as-child>
+              <router-link to="/problems">View Problems</router-link>
             </Button>
           </div>
         </div>
@@ -74,14 +77,14 @@ const abouts = [
       </article>
     </section>
 
-    <!-- PROBLEM SETS -->
+    <!-- PROBLEMS -->
     <section class="container flex-1 px-8">
-      <h2 class="px-4 py-5 text-3xl font-extrabold">Featured Problem Sets</h2>
-      <!-- FEATURED PROBLEM SETS -->
+      <h2 class="px-4 py-5 text-3xl font-extrabold">Featured Problems</h2>
+      <!-- FEATURED PROBLEMS -->
       <article class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="i in 9" :key="i">
           <CardHeader>
-            <CardTitle>Problem Set {{ i }}</CardTitle>
+            <CardTitle>Problem {{ i }}</CardTitle>
           </CardHeader>
           <CardContent>
             <CardDescription>
@@ -90,7 +93,9 @@ const abouts = [
             </CardDescription>
           </CardContent>
           <CardFooter>
-            <Button>View</Button>
+            <Button as-child>
+              <router-link :to="'/problems/' + i">View</router-link>
+            </Button>
           </CardFooter>
         </Card>
       </article>
@@ -138,9 +143,9 @@ const abouts = [
           </CardDescription>
         </CardContent>
         <CardFooter class="flex items-center justify-center gap-10">
-          <!-- PROBLEMSETS -->
+          <!-- PROBLEMS -->
           <Button variant="secondary" as-child>
-            <router-link to="/problemsets"> View Problem Sets </router-link>
+            <router-link to="/problems"> View Problems </router-link>
           </Button>
           <!-- CREATE ACCOUNT -->
           <Button variant="default" as-child>

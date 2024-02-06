@@ -44,18 +44,6 @@ router.afterEach((to) => {
         <div class="hidden md:block">
           <Button
             variant="outline"
-            class="mr-2"
-            :class="[
-              route.path === '/problemsets'
-                ? 'hover:text-primaru/80 text-primary'
-                : 'text-foreground/70',
-            ]"
-            as-child
-          >
-            <router-link to="/problemsets">Problem Sets</router-link>
-          </Button>
-          <Button
-            variant="outline"
             class="items-center"
             :class="[
               route.path === '/problems'

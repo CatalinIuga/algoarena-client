@@ -22,15 +22,6 @@ export const router = createRouter({
       component: () => import("./views/Profile.vue"),
     },
     {
-      path: "/problemsets",
-      component: () => import("./views/ProblemSets.vue"),
-    },
-    {
-      // specific set
-      path: "/problemsets/:id",
-      component: () => import("./views/ProblemSet.vue"),
-    },
-    {
       path: "/problems",
       component: () => import("./views/Problems.vue"),
     },
