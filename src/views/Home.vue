@@ -14,6 +14,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { getRandomProblems } from "@/service/problemService";
+import { ProblemResponse } from "@/types/problem";
+import { onMounted, ref } from "vue";
+
 
 const abouts = [
   {
@@ -32,6 +36,13 @@ const abouts = [
       "AlgoArena is built using Vue3, TailwindCSS, and TypeScript. The backend is built using Spring Boot and MySQL. Problem solutions are tested using Judge0.",
   },
 ];
+
+const problems = ref < ProblemResponse[] > ();
+
+onMounted( async () => {
+  problems.value = await getRandomProblems();
+  console.log(problems);
+});
 </script>
 
 <template>
@@ -78,23 +89,22 @@ const abouts = [
     </section>
 
     <!-- PROBLEMS -->
-    <section class="container flex-1 px-8">
+    <section v-if="problems && problems.length>0" class="container flex-1 px-8">
       <h2 class="px-4 py-5 text-3xl font-extrabold">Featured Problems</h2>
       <!-- FEATURED PROBLEMS -->
       <article class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <Card v-for="i in 9" :key="i">
+        <Card v-for="problem in problems" :key="problem.id">
           <CardHeader>
-            <CardTitle>Problem {{ i }}</CardTitle>
+            <CardTitle>{{ problem.name }}</CardTitle>
           </CardHeader>
           <CardContent>
-            <CardDescription>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-              voluptatum, quibusdam, voluptates, quia voluptate quod quos
+            <CardDescription class="line-clamp-4">
+              {{ problem.description }}
             </CardDescription>
           </CardContent>
           <CardFooter>
             <Button as-child>
-              <router-link :to="'/problems/' + i">View</router-link>
+              <router-link :to="'/problems/' + problem.id">View</router-link>
             </Button>
           </CardFooter>
         </Card>
