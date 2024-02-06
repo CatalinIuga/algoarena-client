@@ -8,16 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import {
   Pagination,
   PaginationFirst,
@@ -27,17 +28,31 @@ import {
   PaginationNext,
   PaginationPrev,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/components/ui/toast/use-toast";
 
 import { getCategories } from "@/service/categoriesService";
-import { getProblems } from "@/service/problemService";
+import { createProblem, getProblems } from "@/service/problemService";
+import { authStore } from "@/store";
 import { CategoriesResponse } from "@/types/category";
 import { ProblemResponse } from "@/types/problem";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref } from "vue";
+
+const store = authStore();
+const { toast } = useToast();
 
 const problems = ref<ProblemResponse[]>([]);
 const categories = ref<CategoriesResponse[]>([]);
 const filteredProblems = ref<ProblemResponse[]>([]);
 
+const ownProblems = ref<boolean>(false);
 const searchQuery = ref<string>("");
 const difficultyQuery = ref<string>("any");
 const statusQuery = ref<string>("any");
@@ -48,6 +63,8 @@ const totalPages = ref<number>(1);
 
 function filter() {
   filteredProblems.value = problems.value.filter((problem) => {
+    const isOwnProblemMatch =
+      !ownProblems.value || problem.author.id === store.userId;
     const isNameMatch =
       problem.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
       problem.description
@@ -56,17 +73,23 @@ function filter() {
     const isDifficultyMatch =
       difficultyQuery.value === "any" ||
       problem.difficulty.toLowerCase() === difficultyQuery.value;
-    const isStatusMatch =
-      statusQuery.value === "any" ||
-      (statusQuery.value === "solved" && problem.isSolved) ||
-      (statusQuery.value === "unsolved" && !problem.isSolved);
+    // const isStatusMatch =
+    //   statusQuery.value === "any" ||
+    //   (statusQuery.value === "solved" && problem.isSolved) ||
+    //   (statusQuery.value === "unsolved" && !problem.isSolved);
     const isCategoryMatch =
       selectedCategories.value.length === 0 ||
       selectedCategories.value.every((categoryId) =>
         problem.categories.some((category) => category.id === categoryId),
       );
 
-    return isNameMatch && isDifficultyMatch && isStatusMatch && isCategoryMatch;
+    return (
+      isOwnProblemMatch &&
+      isNameMatch &&
+      isDifficultyMatch &&
+      // isStatusMatch &&
+      isCategoryMatch
+    );
   });
 
   totalPages.value = Math.ceil(filteredProblems.value.length / pageSize);
@@ -78,6 +101,8 @@ function resetFilters() {
   difficultyQuery.value = "any";
   statusQuery.value = "any";
   selectedCategories.value = [];
+  ownProblems.value = false;
+  filter();
 }
 
 function selectOrDeselectCategory(id: number) {
@@ -87,6 +112,62 @@ function selectOrDeselectCategory(id: number) {
     );
   } else {
     selectedCategories.value = [...selectedCategories.value, id];
+  }
+}
+
+const newProblem = reactive({
+  name: "",
+  authorId: store.userId!,
+  description: "",
+  difficulty: "EASY" as "EASY" | "MEDIUM" | "HARD",
+  categoriesIds: [] as number[],
+  exampleInput: "",
+  exampleOutput: "",
+  input: "",
+  output: "",
+});
+const successNewProblem = ref("");
+const errorNewProblem = ref("");
+
+function addOrRemoveNewCategory(id: number) {
+  if (newProblem.categoriesIds.includes(id)) {
+    newProblem.categoriesIds = newProblem.categoriesIds.filter(
+      (categoryId) => categoryId !== id,
+    );
+  } else {
+    newProblem.categoriesIds = [...newProblem.categoriesIds, id];
+  }
+}
+
+async function createNewProblem() {
+  try {
+    successNewProblem.value = await createProblem(newProblem);
+    toast({
+      title: "Sucess",
+      description: successNewProblem.value,
+      variant: "default",
+    });
+
+    newProblem.name = "";
+    newProblem.description = "";
+    newProblem.difficulty = "EASY";
+    newProblem.categoriesIds = [];
+    newProblem.exampleInput = "";
+    newProblem.exampleOutput = "";
+    newProblem.input = "";
+    newProblem.output = "";
+
+    errorNewProblem.value = "";
+
+    problems.value = await getProblems();
+    filteredProblems.value = problems.value;
+    totalPages.value = Math.ceil(filteredProblems.value.length / pageSize);
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: JSON.parse(error.message).message,
+      variant: "destructive",
+    });
   }
 }
 
@@ -104,10 +185,114 @@ onMounted(async () => {
   >
     <div class="flex justify-between md:col-span-7">
       <h1 class="text-3xl font-bold">Problems</h1>
-      <div class="items center flex gap-2">
-        <Button class="ml-auto" variant="outline">My problems</Button>
-        <Button class="ml-auto" variant="default">Add Problem</Button>
-      </div>
+      <!-- ADD PROBLEM -->
+      <Dialog>
+        <DialogTrigger as-child>
+          <Button class="ml-auto" variant="default">Add Problem</Button>
+        </DialogTrigger>
+        <DialogContent class="max-h-[500px] overflow-y-auto sm:max-w-[600px]">
+          <DialogHeader>
+            <DialogTitle>Add problem</DialogTitle>
+            <DialogDescription>
+              Fill the form to add a new problem
+            </DialogDescription>
+          </DialogHeader>
+          <!-- PROBLEM FORM -->
+          <div class="grid gap-4 py-4">
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="name" class="text-right">Name</Label>
+              <Input
+                id="name"
+                v-model="newProblem.name"
+                placeholder="Problem name"
+                class="col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="description" class="text-right">Description</Label>
+              <Textarea
+                id="description"
+                v-model="newProblem.description"
+                placeholder="Problem description"
+                class="col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="difficulty" class="text-right">Difficulty</Label>
+              <Select id="difficulty" v-model="newProblem.difficulty">
+                <SelectTrigger class="col-span-3">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="EASY">Easy</SelectItem>
+                  <SelectItem value="MEDIUM">Medium</SelectItem>
+                  <SelectItem value="HARD">Hard</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="categories" class="text-right">Categories</Label>
+              <div class="col-span-3 flex flex-wrap gap-1">
+                <Badge
+                  v-for="category in categories"
+                  :key="category.id"
+                  :variant="
+                    newProblem.categoriesIds.includes(category.id)
+                      ? 'default'
+                      : 'outline'
+                  "
+                  @click="addOrRemoveNewCategory(category.id)"
+                >
+                  {{ category.categoryName }}
+                </Badge>
+              </div>
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="exampleInput" class="text-right">Example Input</Label>
+              <Textarea
+                id="exampleInput"
+                v-model="newProblem.exampleInput"
+                placeholder="Example input"
+                class="col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="exampleOutput" class="text-right"
+                >Example Output</Label
+              >
+              <Textarea
+                id="exampleOutput"
+                v-model="newProblem.exampleOutput"
+                placeholder="Example output"
+                class="col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="input" class="text-right">Input</Label>
+              <Textarea
+                id="input"
+                v-model="newProblem.input"
+                placeholder="Input"
+                class="col-span-3"
+              />
+            </div>
+            <div class="grid grid-cols-4 items-center gap-4">
+              <Label for="output" class="text-right">Output</Label>
+              <Textarea
+                id="output"
+                v-model="newProblem.output"
+                placeholder="Output"
+                class="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button @click="createNewProblem" type="submit">
+              Save changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
 
     <!-- Filters section -->
@@ -164,6 +349,10 @@ onMounted(async () => {
                 <SelectItem value="unsolved">Unsolved</SelectItem>
               </SelectContent>
             </Select>
+          </div>
+          <div class="flex items-center gap-4">
+            <Label class="underline">My problems</Label>
+            <input type="checkbox" class="size-4" v-model="ownProblems" />
           </div>
         </CardContent>
         <CardFooter class="flex flex-col gap-4">

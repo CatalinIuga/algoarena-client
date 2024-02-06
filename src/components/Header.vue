@@ -41,7 +41,7 @@ router.afterEach((to) => {
         </Button>
 
         <!-- LINKS SECTION -->
-        <div class="hidden md:block">
+        <div class="">
           <Button
             variant="outline"
             class="items-center"

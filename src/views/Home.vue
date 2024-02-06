@@ -92,8 +92,15 @@ onMounted( async () => {
     <section v-if="problems && problems.length>0" class="container flex-1 px-8">
       <h2 class="px-4 py-5 text-3xl font-extrabold">Featured Problems</h2>
       <!-- FEATURED PROBLEMS -->
+<<<<<<< Updated upstream
       <article class="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Card v-for="problem in problems" :key="problem.id">
+=======
+      <article
+        class="grid grid-cols-1 items-center gap-5 md:grid-cols-2 lg:grid-cols-3"
+      >
+        <Card v-for="i in 7" :key="i">
+>>>>>>> Stashed changes
           <CardHeader>
             <CardTitle>{{ problem.name }}</CardTitle>
           </CardHeader>

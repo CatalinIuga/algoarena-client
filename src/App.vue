@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Footer from "@/components/Footer.vue";
 import Header from "@/components/Header.vue";
+import Toaster from '@/components/ui/toast/Toaster.vue'
 </script>
 
 <template>
@@ -11,4 +12,5 @@ import Header from "@/components/Header.vue";
     </main>
     <Footer />
   </div>
+  <Toaster />
 </template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,6 +45,7 @@ onMounted(async () => {
     router.push("/problems");
   }
 });
+const status = ref("Solved");
 
 // changes based on selected language
 const language = ref("C++");
@@ -96,19 +98,31 @@ const submit = (_e: Event) => {
           <CardTitle class="text-2xl font-bold">{{ problem.name }}</CardTitle>
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
-            <!-- TODO: link to profile -->
-            <span class="font-semibold text-primary">{{
-              problem.author.username
-            }}</span>
+            <span class="font-semibold text-primary underline">
+              <router-link :to="'/users/' + problem.author.id">
+                {{ problem.author.username }}
+              </router-link>
+            </span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">
-            <span class="font-semibold">Categories: </span>
+            <span class="font-semibold">Status: </span>
             <span
-              v-for="category in problem.categories"
-              :key="category.id"
-              class="mr-2 rounded-full bg-gray-200 px-3 py-1 text-xs font-semibold text-gray-800"
+              class="rounded-full px-3 py-1 text-xs font-semibold capitalize text-foreground"
+              :class="status === 'Solved' ? 'bg-green-500' : 'bg-red-500'"
             >
-              {{ category.categoryName }}
+              {{ status.toLowerCase() }}</span
+            >
+          </CardDescription>
+          <CardDescription class="flex gap-3 px-2 text-sm">
+            <span class="font-semibold">Categories: </span>
+            <span class="flex flex-wrap items-center justify-center gap-1">
+              <Badge
+                v-for="category in problem.categories"
+                :key="category.id"
+                :variant="'outline'"
+              >
+                {{ category.categoryName }}
+              </Badge>
             </span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">
