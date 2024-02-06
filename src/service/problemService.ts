@@ -11,11 +11,11 @@ export const getProblem = async (id: string) => {
   return response.json() as Promise<ProblemResponse>;
 };
 
-<<<<<<< Updated upstream
 export const getRandomProblems = async () => {
   const response = await fetch(`${apiURL}/problems/random`);
   return response.json() as Promise<ProblemResponse[]>;
-=======
+};
+
 export const createProblem = async (data: {
   name: string;
   description: string;
@@ -39,5 +39,4 @@ export const createProblem = async (data: {
     throw new Error(await response.text());
   }
   return response.text() as Promise<string>;
->>>>>>> Stashed changes
 };
