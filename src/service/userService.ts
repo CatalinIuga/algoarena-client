@@ -20,3 +20,30 @@ export const getProfile = async (
 
   return response.json() as Promise<ProfileResponse>;
 };
+
+export const updateUserProfile = async (
+  token: string,
+  id: number | undefined,
+  data: FormData,
+): Promise<{
+  token: string;
+}> => {
+  if (!id) {
+    throw new Error("User ID is required");
+  }
+  const response = await fetch(`${apiURL}/users/${id}/profile`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: data,
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to update profile");
+  }
+
+  return response.json() as Promise<{
+    token: string;
+  }>;
+};

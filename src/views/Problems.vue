@@ -515,10 +515,10 @@ onMounted(async () => {
             >
               <DialogTrigger
                 @click="getProblem(problem.id)"
-                class="absolute right-10 top-5"
+                class="absolute right-10 top-[19px]"
               >
                 <PencilIcon
-                  class="size-4 cursor-pointer stroke-2 text-primary"
+                  class="size-[15px] cursor-pointer stroke-2 text-primary"
                 />
               </DialogTrigger>
               <DialogContent
@@ -707,7 +707,7 @@ onMounted(async () => {
           </CardContent>
           <CardFooter class="flex items-center justify-between">
             <Button variant="default" class="w-full" as-child>
-              <router-link :to="'/problems/' + problem.id">View</router-link>
+              <router-link :to="'/problems/' + problem.id"> Solve </router-link>
             </Button>
           </CardFooter>
         </Card>

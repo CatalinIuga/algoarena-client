@@ -40,12 +40,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getProfile } from "@/service/userService";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { changeUserPassword } from "@/service/authService";
+import { getProfile, updateUserProfile } from "@/service/userService";
 import { authStore } from "@/store";
 import { ProfileResponse } from "@/types/user";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
 
+const { toast } = useToast();
 const store = authStore();
 const { userId, token } = storeToRefs(store);
 
@@ -57,6 +60,7 @@ const profile = ref<ProfileResponse>({
   role: "",
   username: "",
 });
+
 const isLoading = ref(false);
 
 const usernameInput = ref("");
@@ -79,11 +83,53 @@ onMounted(async () => {
 });
 
 const editProfile = async () => {
-  console.log(usernameInput.value, emailInput.value, avatarInput.value);
+  const form = new FormData();
+  form.append("username", usernameInput.value);
+  form.append("email", emailInput.value);
+  if (avatarInput.value) {
+    form.append("avatar", avatarInput.value);
+  }
+
+  try {
+    const newJwt = await updateUserProfile(token.value, userId.value, form);
+    token.value = newJwt.token;
+
+    toast({
+      title: "Profile updated",
+      description: "Your profile has been updated successfully.",
+      variant: "default",
+    });
+    profile.value = await getProfile(token.value, userId.value);
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: error,
+      variant: "destructive",
+    });
+    console.log(error.message);
+  }
 };
 
 const changePassword = async () => {
-  console.log(passwordInput.value, newPasswordInput.value);
+  try {
+    await changeUserPassword(
+      userId.value!,
+      passwordInput.value,
+      newPasswordInput.value,
+    );
+    toast({
+      title: "Password changed",
+      description: "Your password has been changed successfully.",
+      variant: "default",
+    });
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: error,
+      variant: "destructive",
+    });
+    console.log(error.message);
+  }
 };
 
 const deleteAccount = async () => {
@@ -237,9 +283,9 @@ const submissions = ref([
                 </div>
               </div>
               <DialogFooter>
-                <Button class="w-full" @click="editProfile" type="submit"
-                  >Save changes</Button
-                >
+                <Button class="w-full" @click="editProfile">
+                  Save changes
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -247,9 +293,9 @@ const submissions = ref([
           <!-- Password Change -->
           <Dialog>
             <DialogTrigger as-child>
-              <Button variant="secondary" class="w-full"
-                >Change password</Button
-              >
+              <Button variant="secondary" class="w-full">
+                Change password
+              </Button>
             </DialogTrigger>
             <DialogContent class="sm:max-w-lg">
               <DialogHeader>
@@ -279,9 +325,9 @@ const submissions = ref([
                 </div>
               </div>
               <DialogFooter>
-                <Button @click="changePassword" class="w-full" type="submit"
-                  >Save changes</Button
-                >
+                <Button @click="changePassword" class="w-full" type="submit">
+                  Save changes
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

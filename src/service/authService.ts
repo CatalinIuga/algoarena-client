@@ -53,3 +53,24 @@ export const checkAuth = async (token: string): Promise<any> => {
 
   return response.json();
 };
+
+export const changeUserPassword = async (
+  id: number,
+  password: string,
+  newPassword: string,
+): Promise<any> => {
+  const response = await fetch(`${apiURL}/auth/change_password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ id, password, newPassword }),
+  });
+
+  const result = await response.json();
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+
+  return result;
+};
