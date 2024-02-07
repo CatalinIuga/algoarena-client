@@ -9,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { languages } from "@/lib/languages";
 import { getUserSubmissions } from "@/service/userService";
 import { authStore } from "@/store";
+import { SubmissionResponse } from "@/types/submission";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
-import { SubmissionResponse } from "@/types/submission";
 
 const store = authStore();
 const { userId } = storeToRefs(store);
@@ -23,6 +24,7 @@ onMounted(async () => {
   try {
     isLoading.value = true;
     submissions.value = await getUserSubmissions(userId.value);
+    console.log(submissions.value);
   } catch (error) {
     console.log(error);
   }
@@ -85,7 +87,13 @@ const submissions = ref<SubmissionResponse[]>([]);
                   "
                   >{{ submission.status }}</TableCell
                 >
-                <TableCell>{{ submission.language_id }}</TableCell>
+                <TableCell>{{
+                  languages[
+                    Object.keys(languages).find(
+                      (key) => languages[key].id === submission.language_id,
+                    ) || "C++"
+                  ].name
+                }}</TableCell>
                 <TableCell>{{ submission.time }}</TableCell>
                 <TableCell>{{ submission.memory }}</TableCell>
                 <TableCell>{{ submission.date.replace(/T/g, " ") }}</TableCell>

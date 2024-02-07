@@ -302,7 +302,7 @@ onMounted(async () => {
     <div class="flex justify-between md:col-span-7">
       <h1 class="text-3xl font-bold">Problems</h1>
       <!-- ADD PROBLEM -->
-      <Dialog>
+      <Dialog @update:open="resetNewProblem">
         <DialogTrigger as-child>
           <Button class="ml-auto" variant="default">Add Problem</Button>
         </DialogTrigger>
