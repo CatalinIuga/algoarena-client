@@ -13,4 +13,5 @@ export type SubmissionResponse = {
   message: string;
   time: string;
   memory: string;
+  date: string;
 };

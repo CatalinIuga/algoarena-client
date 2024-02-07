@@ -361,8 +361,7 @@ const submissions = ref<SubmissionResponse[]>([]);
                 <TableCell>{{ submission.language_id }}</TableCell>
                 <TableCell>{{ submission.time }}</TableCell>
                 <TableCell>{{ submission.memory }}</TableCell>
-                <TableCell>{{ "2021-01-01" }}</TableCell>
-                <!-- <TableCell>{{ submission.date }}</TableCell> -->
+                <TableCell>{{ submission.date.replace(/T/g, " ") }}</TableCell>
               </TableRow>
               <TableEmpty :colspan="6" v-else>
                 <div class="flex flex-col items-center justify-center gap-5">
