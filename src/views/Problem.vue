@@ -23,6 +23,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { getProblemById } from "@/service/problemService";
 import { submitSolution } from "@/service/submissionService";
@@ -186,8 +187,18 @@ const submit = async (_e: Event) => {
           </div>
           <div class="text-muted-foreground">
             <h2 class="pb-2 text-lg text-foreground underline">Example:</h2>
-            <p class="px-2">Input: bing</p>
-            <p class="px-2">Output: bong</p>
+            <p class="px-2">Input:</p>
+            <textarea
+              class="w-full overflow-auto rounded-sm bg-secondary p-2"
+              readonly
+              :value="problem.exampleInput"
+            />
+            <p class="px-2">Output:</p>
+            <textarea
+              class="w-full overflow-auto rounded-sm bg-secondary p-2"
+              readonly
+              :value="problem.exampleOutput"
+            />
           </div>
         </CardContent>
       </Card>
