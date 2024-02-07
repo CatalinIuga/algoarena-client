@@ -6,7 +6,7 @@ export const getProblems = async () => {
   return response.json() as Promise<ProblemResponse[]>;
 };
 
-export const getProblem = async (id: string) => {
+export const getProblemById = async (id: number) => {
   const response = await fetch(`${apiURL}/problems/${id}`);
   return response.json() as Promise<ProblemResponse>;
 };
@@ -34,6 +34,44 @@ export const createProblem = async (data: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.text() as Promise<string>;
+};
+
+export const updateProblemById = async (
+  id: number,
+  data: {
+    id: number;
+    name: string;
+    description: string;
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    authorId: number;
+    categoriesIds: number[];
+    exampleInput: string;
+    exampleOutput: string;
+    input: string;
+    output: string;
+  },
+) => {
+  const response = await fetch(`${apiURL}/problems/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.text() as Promise<string>;
+};
+
+export const deleteProblemById = async (id: number) => {
+  const response = await fetch(`${apiURL}/problems/${id}`, {
+    method: "DELETE",
   });
   if (!response.ok) {
     throw new Error(await response.text());

@@ -11,4 +11,8 @@ export type ProblemResponse = {
     id: number;
     categoryName: string;
   }[];
+  exampleInput: string;
+  exampleOutput: string;
+  input: string;
+  output: string;
 };

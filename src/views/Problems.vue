@@ -1,4 +1,15 @@
 <script setup lang="ts">
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,6 +39,8 @@ import {
   PaginationNext,
   PaginationPrev,
 } from "@/components/ui/pagination";
+import { PencilIcon, XIcon } from "lucide-vue-next";
+
 import {
   Select,
   SelectContent,
@@ -39,7 +52,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast/use-toast";
 
 import { getCategories } from "@/service/categoriesService";
-import { createProblem, getProblems } from "@/service/problemService";
+import {
+  createProblem,
+  deleteProblemById,
+  getProblemById,
+  getProblems,
+  updateProblemById,
+} from "@/service/problemService";
 import { authStore } from "@/store";
 import { CategoriesResponse } from "@/types/category";
 import { ProblemResponse } from "@/types/problem";
@@ -148,20 +167,12 @@ async function createNewProblem() {
       variant: "default",
     });
 
-    newProblem.name = "";
-    newProblem.description = "";
-    newProblem.difficulty = "EASY";
-    newProblem.categoriesIds = [];
-    newProblem.exampleInput = "";
-    newProblem.exampleOutput = "";
-    newProblem.input = "";
-    newProblem.output = "";
+    resetNewProblem();
 
     errorNewProblem.value = "";
 
     problems.value = await getProblems();
-    filteredProblems.value = problems.value;
-    totalPages.value = Math.ceil(filteredProblems.value.length / pageSize);
+    filter();
   } catch (error: any) {
     toast({
       title: "Error",
@@ -171,11 +182,116 @@ async function createNewProblem() {
   }
 }
 
+async function deleteProblem(id: number) {
+  try {
+    await deleteProblemById(id);
+    toast({
+      title: "Sucess",
+      description: "Problem deleted",
+      variant: "default",
+    });
+
+    problems.value = await getProblems();
+    filter();
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: JSON.parse(error.message).message,
+      variant: "destructive",
+    });
+  }
+}
+
+async function getProblem(id: number) {
+  try {
+    const problem = await getProblemById(id);
+    newProblem.name = problem.name;
+    newProblem.description = problem.description;
+    newProblem.difficulty = problem.difficulty;
+    newProblem.categoriesIds = problem.categories.map(
+      (category) => category.id,
+    );
+    newProblem.exampleInput = problem.exampleInput;
+    newProblem.exampleOutput = problem.exampleOutput;
+    newProblem.input = problem.input;
+    newProblem.output = problem.output;
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: JSON.parse(error.message).message,
+      variant: "destructive",
+    });
+  }
+}
+
+async function updateProblem(
+  id: number,
+  {
+    name,
+    description,
+    difficulty,
+    categoriesIds,
+    exampleInput,
+    exampleOutput,
+    input,
+    output,
+  }: {
+    name: string;
+    description: string;
+    difficulty: "EASY" | "MEDIUM" | "HARD";
+    categoriesIds: number[];
+    exampleInput: string;
+    exampleOutput: string;
+    input: string;
+    output: string;
+  },
+) {
+  try {
+    await updateProblemById(id, {
+      id,
+      name,
+      description,
+      difficulty,
+      authorId: store.userId!,
+      categoriesIds,
+      exampleInput,
+      exampleOutput,
+      input,
+      output,
+    });
+    toast({
+      title: "Sucess",
+      description: "Problem updated",
+      variant: "default",
+    });
+    resetNewProblem();
+
+    problems.value = await getProblems();
+    filter();
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: JSON.parse(error.message).message,
+      variant: "destructive",
+    });
+  }
+}
+
+function resetNewProblem() {
+  newProblem.name = "";
+  newProblem.description = "";
+  newProblem.difficulty = "EASY";
+  newProblem.categoriesIds = [];
+  newProblem.exampleInput = "";
+  newProblem.exampleOutput = "";
+  newProblem.input = "";
+  newProblem.output = "";
+}
+
 onMounted(async () => {
   categories.value = await getCategories();
   problems.value = await getProblems();
-  filteredProblems.value = problems.value;
-  totalPages.value = Math.ceil(filteredProblems.value.length / pageSize);
+  filter();
 });
 </script>
 
@@ -389,8 +505,159 @@ onMounted(async () => {
           ]"
           :key="problem.id"
         >
-          <CardHeader class="items-center">
+          <CardHeader class="relative items-center">
             <CardTitle>{{ problem.name }}</CardTitle>
+            <!-- edit button -->
+            <Dialog
+              v-if="problem.author.id === store.userId"
+              class="absolute right-12 top-4"
+              @close="resetNewProblem"
+            >
+              <DialogTrigger
+                @click="getProblem(problem.id)"
+                class="absolute right-10 top-5"
+              >
+                <PencilIcon
+                  class="size-4 cursor-pointer stroke-2 text-primary"
+                />
+              </DialogTrigger>
+              <DialogContent
+                class="max-h-[500px] overflow-y-auto sm:max-w-[600px]"
+              >
+                <DialogHeader>
+                  <DialogTitle>Edit problem</DialogTitle>
+                  <DialogDescription>
+                    Fill the form to edit the problem
+                  </DialogDescription>
+                </DialogHeader>
+                <!-- PROBLEM FORM -->
+                <div class="grid gap-4 py-4">
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="name" class="text-right">Name</Label>
+                    <Input
+                      id="name"
+                      v-model="newProblem.name"
+                      placeholder="Problem name"
+                      class="col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="description" class="text-right"
+                      >Description</Label
+                    >
+                    <Textarea
+                      id="description"
+                      v-model="newProblem.description"
+                      placeholder="Problem description"
+                      class="col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="difficulty" class="text-right"
+                      >Difficulty</Label
+                    >
+                    <Select id="difficulty" v-model="newProblem.difficulty">
+                      <SelectTrigger class="col-span-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="EASY">Easy</SelectItem>
+                        <SelectItem value="MEDIUM">Medium</SelectItem>
+                        <SelectItem value="HARD">Hard</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="categories" class="text-right"
+                      >Categories</Label
+                    >
+                    <div class="col-span-3 flex flex-wrap gap-1">
+                      <Badge
+                        v-for="category in categories"
+                        :key="category.id"
+                        :variant="
+                          newProblem.categoriesIds.includes(category.id)
+                            ? 'default'
+                            : 'outline'
+                        "
+                        @click="addOrRemoveNewCategory(category.id)"
+                      >
+                        {{ category.categoryName }}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="exampleInput" class="text-right"
+                      >Example Input</Label
+                    >
+                    <Textarea
+                      id="exampleInput"
+                      v-model="newProblem.exampleInput"
+                      placeholder="Example input"
+                      class="col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="exampleOutput" class="text-right"
+                      >Example Output</Label
+                    >
+                    <Textarea
+                      id="exampleOutput"
+                      v-model="newProblem.exampleOutput"
+                      placeholder="Example output"
+                      class="col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="input" class="text-right">Input</Label>
+                    <Textarea
+                      id="input"
+                      v-model="newProblem.input"
+                      placeholder="Input"
+                      class="col-span-3"
+                    />
+                  </div>
+                  <div class="grid grid-cols-4 items-center gap-4">
+                    <Label for="output" class="text-right">Output</Label>
+                    <Textarea
+                      id="output"
+                      v-model="newProblem.output"
+                      placeholder="Output"
+                      class="col-span-3"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    @click="updateProblem(problem.id, newProblem)"
+                    type="submit"
+                  >
+                    Save changes
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <!-- delete button -->
+            <AlertDialog v-if="problem.author.id === store.userId">
+              <AlertDialogTrigger class="absolute right-4 top-4">
+                <XIcon class="size-5 cursor-pointer stroke-2 text-red-500" />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    the problem.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction @click="deleteProblem(problem.id)">
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </CardHeader>
           <CardContent class="flex flex-col justify-between gap-2 pb-2">
             <div class="flex items-center gap-3">

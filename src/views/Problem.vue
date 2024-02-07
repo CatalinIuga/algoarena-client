@@ -23,7 +23,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-import { getProblem } from "@/service/problemService";
+import { getProblemById } from "@/service/problemService";
+import { authStore } from "@/store";
 import { ProblemResponse } from "@/types/problem";
 import { ViewUpdate } from "@codemirror/view";
 import { computed, onMounted, reactive, ref, watch } from "vue";
@@ -33,13 +34,13 @@ import { oneDark as shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
 
 const router = useRouter();
+const userId = authStore().userId;
 
 const problem = ref<ProblemResponse>();
-const id = router.currentRoute.value.params.id;
+const id = parseInt(router.currentRoute.value.params.id as string);
 
 onMounted(async () => {
-  problem.value = await getProblem(id as string);
-  console.log(problem.value);
+  problem.value = await getProblemById(id);
 
   if (!problem.value) {
     router.push("/problems");
@@ -81,7 +82,7 @@ const handleStateUpdate = (viewUpdate: ViewUpdate) => {
 };
 
 const submit = (_e: Event) => {
-  console.log(code.value, languages[language.value].id);
+  console.log(code.value, languages[language.value].id, userId);
 };
 </script>
 
