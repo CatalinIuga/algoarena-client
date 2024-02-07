@@ -30,6 +30,10 @@ export const router = createRouter({
       component: () => import("./views/Problem.vue"),
     },
     {
+      path: "/submissions",
+      component: () => import("./views/Submissions.vue"),
+    },
+    {
       // unmatched paths will redirect to 404
       path: "/:pathMatch(.*)*",
       component: () => import("./views/404.vue"),

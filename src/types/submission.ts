@@ -1,27 +1,14 @@
+import { ProblemResponse } from "./problem";
+
 export type SubmissionResponse = {
-  code: string;
-  language_id: number;
   id: number;
   author: {
+    id: number;
     username: string;
-    id: number;
   };
-  problem: {
-    name: string;
-    description: string;
-    difficulty: "EASY" | "MEDIUM" | "HARD";
-    exampleInput: string;
-    exampleOutput: string;
-    id: number;
-    author: {
-      username: string;
-      id: number;
-    };
-    categories: {
-      categoryName: string;
-      id: number;
-    }[];
-  };
+  problem: ProblemResponse;
+  code: string;
+  language_id: number;
   status: string;
   message: string;
   time: string;

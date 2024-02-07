@@ -1,5 +1,6 @@
 import { ProfileResponse } from "@/types/user";
 import { apiURL } from "./config";
+import { SubmissionResponse } from "@/types/submission";
 
 export const getProfile = async (
   token: string,
@@ -65,4 +66,19 @@ export const deleteUserAccount = async (
   if (!response.ok) {
     throw new Error("Failed to delete account");
   }
+};
+
+export const getUserSubmissions = async (
+  id: number | undefined,
+): Promise<SubmissionResponse[]> => {
+  if (!id) {
+    throw new Error("User ID is required");
+  }
+  const response = await fetch(`${apiURL}/users/${id}/submissions`);
+
+  if (!response.ok) {
+    throw new Error("Failed to get submissions");
+  }
+
+  return response.json() as Promise<SubmissionResponse[]>;
 };

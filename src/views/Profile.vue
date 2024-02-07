@@ -46,11 +46,13 @@ import {
   deleteUserAccount,
   getProfile,
   updateUserProfile,
+  getUserSubmissions,
 } from "@/service/userService";
 import { authStore } from "@/store";
 import { ProfileResponse } from "@/types/user";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
+import { SubmissionResponse } from "@/types/submission";
 
 const { toast } = useToast();
 const store = authStore();
@@ -79,6 +81,7 @@ onMounted(async () => {
     profile.value = await getProfile(token.value, userId.value);
     usernameInput.value = profile.value.username;
     emailInput.value = profile.value.email;
+    submissions.value = await getUserSubmissions(userId.value);
   } catch (error) {
     console.log(error);
   }
@@ -156,68 +159,7 @@ const deleteAccount = async () => {
   await store.signOut();
 };
 
-const submissions = ref([
-  {
-    id: 1,
-    problemName: "Problem 1",
-    problemId: 1,
-    verdict: "Unaccepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-  {
-    id: 2,
-    problemName: "Problem 2",
-    problemId: 2,
-    verdict: "Accepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-  {
-    id: 3,
-    problemName: "Problem 3",
-    problemId: 3,
-    verdict: "Accepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-  {
-    id: 4,
-    problemName: "Problem 4",
-    problemId: 4,
-    verdict: "Accepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-  {
-    id: 5,
-    problemName: "Problem 5",
-    problemId: 5,
-    verdict: "Accepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-  {
-    id: 6,
-    problemName: "Problem 6",
-    problemId: 6,
-    verdict: "Accepted",
-    language: "C++",
-    time: "1.2s",
-    memory: "1.2MB",
-    date: "2021-01-01",
-  },
-]);
+const submissions = ref<SubmissionResponse[]>([]);
 </script>
 
 <template>
@@ -407,19 +349,20 @@ const submissions = ref([
                 v-for="submission in submissions.slice(0, 5)"
                 :key="submission.id"
               >
-                <TableCell>{{ submission.problemName }}</TableCell>
+                <TableCell>{{ submission.problem.name }}</TableCell>
                 <TableCell
                   :class="
-                    submission.verdict === 'Accepted'
+                    submission.status === 'Accepted'
                       ? 'text-green-500'
                       : 'text-red-500'
                   "
-                  >{{ submission.verdict }}</TableCell
+                  >{{ submission.status }}</TableCell
                 >
-                <TableCell>{{ submission.language }}</TableCell>
+                <TableCell>{{ submission.language_id }}</TableCell>
                 <TableCell>{{ submission.time }}</TableCell>
                 <TableCell>{{ submission.memory }}</TableCell>
-                <TableCell>{{ submission.date }}</TableCell>
+                <TableCell>{{ "2021-01-01" }}</TableCell>
+                <!-- <TableCell>{{ submission.date }}</TableCell> -->
               </TableRow>
               <TableEmpty :colspan="6" v-else>
                 <div class="flex flex-col items-center justify-center gap-5">
