@@ -23,18 +23,25 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { useToast } from "@/components/ui/toast";
 import { getProblemById } from "@/service/problemService";
+import { submitSolution } from "@/service/submissionService";
 import { authStore } from "@/store";
 import { ProblemResponse } from "@/types/problem";
 import { ViewUpdate } from "@codemirror/view";
+import { storeToRefs } from "pinia";
 import { computed, onMounted, reactive, ref, watch } from "vue";
 import { Codemirror } from "vue-codemirror";
 import { useRouter } from "vue-router";
 import { oneDark as shadCn } from "../lib/codemirror";
 import { languages } from "../lib/languages";
 
+const { toast } = useToast();
+
+const store = authStore();
+const { userId, token } = storeToRefs(store);
+
 const router = useRouter();
-const userId = authStore().userId;
 
 const problem = ref<ProblemResponse>();
 const id = parseInt(router.currentRoute.value.params.id as string);
@@ -81,8 +88,35 @@ const handleStateUpdate = (viewUpdate: ViewUpdate) => {
   state.lines = viewUpdate.state.doc.lines;
 };
 
-const submit = (_e: Event) => {
-  console.log(code.value, languages[language.value].id, userId);
+const submit = async (_e: Event) => {
+  try {
+    const res = await submitSolution({
+      token: token.value,
+      code: code.value,
+      languageId: languages[language.value].id,
+      problemId: id,
+      userId: userId.value!,
+    });
+
+    if (res === "Accepted") {
+      status.value = "Solved";
+    } else {
+      throw new Error(res);
+    }
+
+    toast({
+      title: "Success!",
+      description: "You are correct!",
+      variant: "default",
+    });
+  } catch (error: any) {
+    console.error(error);
+    toast({
+      title: "Not good!",
+      description: error.message,
+      variant: "destructive",
+    });
+  }
 };
 </script>
 

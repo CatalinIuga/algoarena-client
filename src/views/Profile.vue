@@ -42,7 +42,11 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast/use-toast";
 import { changeUserPassword } from "@/service/authService";
-import { getProfile, updateUserProfile } from "@/service/userService";
+import {
+  deleteUserAccount,
+  getProfile,
+  updateUserProfile,
+} from "@/service/userService";
 import { authStore } from "@/store";
 import { ProfileResponse } from "@/types/user";
 import { storeToRefs } from "pinia";
@@ -133,7 +137,22 @@ const changePassword = async () => {
 };
 
 const deleteAccount = async () => {
-  console.log("Deleting account...");
+  try {
+    await deleteUserAccount(token.value, userId.value);
+    toast({
+      title: "Account deleted",
+      description: "Your account has been deleted successfully.",
+      variant: "default",
+    });
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: error,
+      variant: "destructive",
+    });
+    console.log(error.message);
+    return;
+  }
   await store.signOut();
 };
 
@@ -385,7 +404,7 @@ const submissions = ref([
             <TableBody class="w-full">
               <TableRow
                 v-if="submissions.length > 0"
-                v-for="submission in submissions"
+                v-for="submission in submissions.slice(0, 5)"
                 :key="submission.id"
               >
                 <TableCell>{{ submission.problemName }}</TableCell>
@@ -403,12 +422,17 @@ const submissions = ref([
                 <TableCell>{{ submission.date }}</TableCell>
               </TableRow>
               <TableEmpty :colspan="6" v-else>
-                No submissions yet...
+                <div class="flex flex-col items-center justify-center gap-5">
+                  No submissions yet
+                  <Button as-child>
+                    <router-link to="/problems">Solve a problem!</router-link>
+                  </Button>
+                </div>
               </TableEmpty>
             </TableBody>
           </Table>
         </CardContent>
-        <CardFooter v-if="submissions.length > 0" class="flex justify-center">
+        <CardFooter v-if="submissions.length > 5" class="flex justify-center">
           <Button as-child>
             <router-link to="/submissions">View all</router-link>
           </Button>

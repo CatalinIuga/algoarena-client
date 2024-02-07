@@ -47,3 +47,22 @@ export const updateUserProfile = async (
     token: string;
   }>;
 };
+
+export const deleteUserAccount = async (
+  token: string,
+  id: number | undefined,
+): Promise<void> => {
+  if (!id) {
+    throw new Error("User ID is required");
+  }
+  const response = await fetch(`${apiURL}/users/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to delete account");
+  }
+};
