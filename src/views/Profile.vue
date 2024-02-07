@@ -41,18 +41,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/components/ui/toast/use-toast";
+import { languages } from "@/lib/languages";
 import { changeUserPassword } from "@/service/authService";
 import {
   deleteUserAccount,
   getProfile,
-  updateUserProfile,
   getUserSubmissions,
+  updateUserProfile,
 } from "@/service/userService";
 import { authStore } from "@/store";
+import { SubmissionResponse } from "@/types/submission";
 import { ProfileResponse } from "@/types/user";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
-import { SubmissionResponse } from "@/types/submission";
 
 const { toast } = useToast();
 const store = authStore();
@@ -85,7 +86,6 @@ onMounted(async () => {
   } catch (error) {
     console.log(error);
   }
-  // await new Promise((resolve) => setTimeout(resolve, 1000));
   isLoading.value = false;
 });
 
@@ -160,6 +160,25 @@ const deleteAccount = async () => {
 };
 
 const submissions = ref<SubmissionResponse[]>([]);
+
+const getLanguageName = (id: number) => {
+  return Object.keys(languages).find((key) => {
+    if (languages[key].id === id) {
+      return key;
+    }
+  });
+};
+
+const formatDate = (date: string) => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  }).format(new Date(date));
+};
 </script>
 
 <template>
@@ -358,10 +377,12 @@ const submissions = ref<SubmissionResponse[]>([]);
                   "
                   >{{ submission.status }}</TableCell
                 >
-                <TableCell>{{ submission.language_id }}</TableCell>
+                <TableCell
+                  >{{ getLanguageName(submission.language_id) }}
+                </TableCell>
                 <TableCell>{{ submission.time }}</TableCell>
                 <TableCell>{{ submission.memory }}</TableCell>
-                <TableCell>{{ submission.date.replace(/T/g, " ") }}</TableCell>
+                <TableCell>{{ formatDate(submission.date) }}</TableCell>
               </TableRow>
               <TableEmpty :colspan="6" v-else>
                 <div class="flex flex-col items-center justify-center gap-5">

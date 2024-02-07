@@ -506,7 +506,7 @@ onMounted(async () => {
           :key="problem.id"
         >
           <CardHeader class="relative items-center">
-            <CardTitle>{{ problem.name }}</CardTitle>
+            <CardTitle class="line-clamp-1 px-4">{{ problem.name }}</CardTitle>
             <!-- edit button -->
             <Dialog
               v-if="problem.author.id === store.userId"
@@ -697,7 +697,17 @@ onMounted(async () => {
             </div>
             <div class="flex items-center gap-3">
               <Label class="text-foreground/70">Difficulty:</Label>
-              <Badge class="mr-2 capitalize">
+              <Badge
+                class="mr-2 capitalize"
+                :class="[
+                  problem.difficulty.toLowerCase() === 'easy'
+                    ? 'bg-green-500 hover:bg-green-500/80'
+                    : problem.difficulty.toLowerCase() === 'medium'
+                      ? 'bg-yellow-500 hover:bg-yellow-500/80'
+                      : 'bg-red-500 hover:bg-red-500/80',
+                  'hover:bg-green-500/80',
+                ]"
+              >
                 {{ problem.difficulty.toLowerCase() }}
               </Badge>
             </div>

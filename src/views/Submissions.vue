@@ -31,6 +31,17 @@ onMounted(async () => {
   isLoading.value = false;
 });
 
+const formatDate = (date: string) => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  }).format(new Date(date));
+};
+
 const submissions = ref<SubmissionResponse[]>([]);
 </script>
 
@@ -96,7 +107,7 @@ const submissions = ref<SubmissionResponse[]>([]);
                 }}</TableCell>
                 <TableCell>{{ submission.time }}</TableCell>
                 <TableCell>{{ submission.memory }}</TableCell>
-                <TableCell>{{ submission.date.replace(/T/g, " ") }}</TableCell>
+                <TableCell>{{ formatDate(submission.date) }}</TableCell>
               </TableRow>
               <TableEmpty :colspan="6" v-else>
                 No submissions yet...
