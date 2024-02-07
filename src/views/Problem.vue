@@ -135,9 +135,7 @@ const submit = async (_e: Event) => {
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
             <span class="font-semibold text-primary underline">
-              <router-link :to="'/users/' + problem.author.id">
                 {{ problem.author.username }}
-              </router-link>
             </span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">

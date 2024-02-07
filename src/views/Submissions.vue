@@ -15,7 +15,9 @@ import { authStore } from "@/store";
 import { SubmissionResponse } from "@/types/submission";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
+const router = useRouter();
 const store = authStore();
 const { userId } = storeToRefs(store);
 const isLoading = ref(false);
@@ -85,6 +87,8 @@ const submissions = ref<SubmissionResponse[]>([]);
             </TableHeader>
             <TableBody class="w-full">
               <TableRow
+                class="cursor-pointer"
+                @click="() => router.push(`/submissions/${submission.id}`)"
                 v-if="submissions.length > 0"
                 v-for="submission in submissions"
                 :key="submission.id"

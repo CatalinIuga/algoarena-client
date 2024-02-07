@@ -54,10 +54,12 @@ import { SubmissionResponse } from "@/types/submission";
 import { ProfileResponse } from "@/types/user";
 import { storeToRefs } from "pinia";
 import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const { toast } = useToast();
 const store = authStore();
 const { userId, token } = storeToRefs(store);
+const router = useRouter();
 
 const profile = ref<ProfileResponse>({
   id: 0,
@@ -364,6 +366,8 @@ const formatDate = (date: string) => {
             </TableHeader>
             <TableBody class="w-full">
               <TableRow
+                class="cursor-pointer"
+                @click="() => router.push(`/submissions/${submission.id}`)"
                 v-if="submissions.length > 0"
                 v-for="submission in submissions.slice(0, 5)"
                 :key="submission.id"
