@@ -8,7 +8,7 @@ export const getSubmissions = async (
   if (!id) {
     throw new Error("User ID is required");
   }
-  const response = await fetch(`${apiURL}/users/${id}/submission`, {
+  const response = await fetch(`${apiURL}/users/${id}/submissions`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

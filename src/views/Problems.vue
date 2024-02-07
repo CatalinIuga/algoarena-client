@@ -59,15 +59,19 @@ import {
   getProblems,
   updateProblemById,
 } from "@/service/problemService";
+import { getSubmissions } from "@/service/submissionService";
 import { authStore } from "@/store";
 import { CategoriesResponse } from "@/types/category";
 import { ProblemResponse } from "@/types/problem";
+import { SubmissionResponse } from "@/types/submission";
 import { onMounted, reactive, ref } from "vue";
 
 const store = authStore();
+const { token, userId } = store;
 const { toast } = useToast();
 
 const problems = ref<ProblemResponse[]>([]);
+const submissions = ref<SubmissionResponse[]>([]);
 const categories = ref<CategoriesResponse[]>([]);
 const filteredProblems = ref<ProblemResponse[]>([]);
 
@@ -92,10 +96,11 @@ function filter() {
     const isDifficultyMatch =
       difficultyQuery.value === "any" ||
       problem.difficulty.toLowerCase() === difficultyQuery.value;
-    // const isStatusMatch =
-    //   statusQuery.value === "any" ||
-    //   (statusQuery.value === "solved" && problem.isSolved) ||
-    //   (statusQuery.value === "unsolved" && !problem.isSolved);
+    const isStatusMatch =
+      statusQuery.value === "any" ||
+      (statusQuery.value === "solved" && getStatus(problem.id) === "Solved") ||
+      (statusQuery.value === "unsolved" &&
+        getStatus(problem.id) === "Unsolved");
     const isCategoryMatch =
       selectedCategories.value.length === 0 ||
       selectedCategories.value.every((categoryId) =>
@@ -106,7 +111,7 @@ function filter() {
       isOwnProblemMatch &&
       isNameMatch &&
       isDifficultyMatch &&
-      // isStatusMatch &&
+      isStatusMatch &&
       isCategoryMatch
     );
   });
@@ -288,9 +293,18 @@ function resetNewProblem() {
   newProblem.output = "";
 }
 
+function getStatus(problemId: number) {
+  const submission = submissions.value.find(
+    (submission) =>
+      submission.problem.id === problemId && submission.status === "Accepted",
+  );
+  return submission ? "Solved" : "Unsolved";
+}
+
 onMounted(async () => {
   categories.value = await getCategories();
   problems.value = await getProblems();
+  submissions.value = await getSubmissions(token, userId);
   filter();
 });
 </script>
@@ -665,11 +679,14 @@ onMounted(async () => {
               <Badge
                 variant="default"
                 :class="[
-                  Math.random() > 0.5 ? '' : 'bg-red-500 hover:bg-red-500/80',
+                  getStatus(problem.id) === 'Solved'
+                    ? 'bg-green-500 hover:bg-green-500/80'
+                    : 'bg-red-500 hover:bg-red-500/80',
+                  ,
                 ]"
                 class="mr-2"
               >
-                {{ Math.random() > 0.5 ? "Solved" : "Unsolved" }}
+                {{ getStatus(problem.id) }}
               </Badge>
             </div>
             <div class="flex items-center gap-3">

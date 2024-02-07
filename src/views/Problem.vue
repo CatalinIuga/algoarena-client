@@ -2,33 +2,34 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
+Card,
+CardContent,
+CardDescription,
+CardHeader,
+CardTitle,
 } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+Select,
+SelectContent,
+SelectItem,
+SelectTrigger,
+SelectValue,
 } from "@/components/ui/select";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
+Tooltip,
+TooltipContent,
+TooltipProvider,
+TooltipTrigger,
 } from "@/components/ui/tooltip";
 
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast";
 import { getProblemById } from "@/service/problemService";
-import { submitSolution } from "@/service/submissionService";
+import { getSubmissions, submitSolution } from "@/service/submissionService";
 import { authStore } from "@/store";
 import { ProblemResponse } from "@/types/problem";
+import { SubmissionResponse } from "@/types/submission";
 import { ViewUpdate } from "@codemirror/view";
 import { storeToRefs } from "pinia";
 import { computed, onMounted, reactive, ref, watch } from "vue";
@@ -49,12 +50,20 @@ const id = parseInt(router.currentRoute.value.params.id as string);
 
 onMounted(async () => {
   problem.value = await getProblemById(id);
+  submissions.value = await getSubmissions(token.value, userId.value);
 
+  status.value = submissions.value.some(
+    (submission) =>
+      submission.problem.id === id && submission.status === "Accepted",
+  )
+    ? "Solved"
+    : "Unsolved";
   if (!problem.value) {
     router.push("/problems");
   }
 });
-const status = ref("Solved");
+const status = ref("");
+const submissions = ref<SubmissionResponse[]>([]);
 
 // changes based on selected language
 const language = ref("C++");
@@ -135,7 +144,7 @@ const submit = async (_e: Event) => {
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
             <span class="font-semibold text-primary underline">
-                {{ problem.author.username }}
+              {{ problem.author.username }}
             </span>
           </CardDescription>
           <CardDescription class="px-2 text-sm">

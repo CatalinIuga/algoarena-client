@@ -16,12 +16,23 @@ export const register = async (
     },
     body: JSON.stringify(data),
   });
+  var result;
+  try {
+    result = await response.json();
+  } catch (e) {
+    result = { message: "Failed to register" };
+  }
 
   if (!response.ok) {
+    if (result.message.includes("duplicate") && result.message.includes("@")) {
+      throw new Error("Email already exists");
+    } else if (result.message.includes("duplicate")) {
+      throw new Error("Username already exists");
+    }
     throw new Error("Failed to register");
   }
 
-  return response.json();
+  return result;
 };
 
 export const login = async (data: LoginRequest): Promise<AuthResponse> => {
@@ -32,12 +43,13 @@ export const login = async (data: LoginRequest): Promise<AuthResponse> => {
     },
     body: JSON.stringify(data),
   });
+  const result = await response.json();
 
   if (!response.ok) {
-    throw new Error("Failed to login");
+    throw new Error(result.message);
   }
 
-  return response.json();
+  return result;
 };
 
 export const checkAuth = async (token: string): Promise<any> => {

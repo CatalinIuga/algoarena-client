@@ -10,16 +10,19 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/toast/use-toast";
 import { authStore } from "@/store";
 import { RegisterRequest } from "@/types/auth";
 import { storeToRefs } from "pinia";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
+const { toast } = useToast();
+
 const router = useRouter();
 
 const store = authStore();
-const { userId, isLoading } = storeToRefs(store);
+const { userId, isLoading, error } = storeToRefs(store);
 
 const username = ref("");
 const email = ref("");
@@ -34,6 +37,13 @@ const submit = async () => {
     avatar: `https://api.dicebear.com/7.x/initials/svg?seed=${username.value}`,
   };
   await store.signUp(data);
+  if (error.value) {
+    toast({
+      title: "Error",
+      description: error.value,
+      variant: "destructive",
+    });
+  }
   await store.checkAuth();
   if (userId.value) {
     router.push("/");

@@ -32,9 +32,9 @@ export const authStore = defineStore("auth", () => {
       const response = await login(loginData);
       token.value = response.token;
       await checkAuth();
-    } catch (err) {
-      error.value = "Failed to login";
-      console.error(err);
+    } catch (err: any) {
+      error.value = err.message;
+      console.error(err.message);
     } finally {
       isLoading.value = false;
     }
@@ -66,8 +66,8 @@ export const authStore = defineStore("auth", () => {
       const response = await register(registerData);
       token.value = response.token;
       await checkAuth();
-    } catch (err) {
-      error.value = "Failed to register";
+    } catch (err: any) {
+      error.value = err.message;
       console.error(err);
     } finally {
       isLoading.value = false;
@@ -88,6 +88,7 @@ export const authStore = defineStore("auth", () => {
     userId,
     token,
     isLoading,
+    error,
     signIn,
     signOut,
     signUp,
