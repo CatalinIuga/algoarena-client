@@ -67,6 +67,7 @@ const submit = async () => {
             v-model="email"
             id="email"
             type="email"
+            required
             placeholder="<your_email.com>"
           />
         </div>
@@ -75,6 +76,8 @@ const submit = async () => {
           <Input
             v-model="password"
             id="password"
+            min="6"
+            required
             type="password"
             placeholder="<your_password>"
           />

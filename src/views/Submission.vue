@@ -54,10 +54,13 @@ const extensions = computed(() => {
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Author: </span>
             <span class="font-semibold text-primary underline">
-                {{ submission.problem.author.username }}
+              {{ submission.problem.author.username }}
             </span>
           </CardDescription>
-
+          <CardDescription class="px-2 text-sm">
+            <span class="font-semibold">Language: </span>
+            <span :class="languages[language].color">{{ language }}</span>
+          </CardDescription>
           <CardDescription class="px-2 text-sm">
             <span class="font-semibold">Status: </span>
             <span

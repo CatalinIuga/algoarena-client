@@ -29,7 +29,43 @@ const email = ref("");
 const password = ref("");
 
 const submit = async () => {
-  console.log(email.value, password.value, username.value);
+  // validate inputs
+  if (!username.value || !email.value || !password.value) {
+    toast({
+      title: "Error",
+      description: "All fields are required",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (password.value.length < 6) {
+    toast({
+      title: "Error",
+      description: "Password must be at least 6 characters",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (username.value.length < 3) {
+    toast({
+      title: "Error",
+      description: "Username must be at least 3 characters",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (email.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) === null) {
+    toast({
+      title: "Error",
+      description: "Invalid email",
+      variant: "destructive",
+    });
+    return;
+  }
+
   const data: RegisterRequest = {
     email: email.value,
     password: password.value,
@@ -70,6 +106,8 @@ const submit = async () => {
             v-model="username"
             id="username"
             type="text"
+            required
+            min="3"
             placeholder="<your_username>"
           />
         </div>
@@ -78,6 +116,7 @@ const submit = async () => {
           <Input
             v-model="email"
             id="email"
+            required
             type="email"
             placeholder="<your@email.com>"
           />
@@ -88,6 +127,7 @@ const submit = async () => {
           <Input
             v-model="password"
             id="password"
+            min="6"
             type="password"
             placeholder="<your_password>"
           />
