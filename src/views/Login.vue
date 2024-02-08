@@ -28,7 +28,34 @@ const email = ref("");
 const password = ref("");
 
 const submit = async () => {
-  console.log(email.value, password.value);
+  // validate inputs
+  if (!email.value || !password.value) {
+    toast({
+      title: "Error",
+      description: "All fields are required",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (password.value.length < 6) {
+    toast({
+      title: "Error",
+      description: "Password must be at least 6 characters",
+      variant: "destructive",
+    });
+    return;
+  }
+
+  if (email.value.match(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g) === null) {
+    toast({
+      title: "Error",
+      description: "Invalid email",
+      variant: "destructive",
+    });
+    return;
+  }
+
   const data: LoginRequest = {
     email: email.value,
     password: password.value,

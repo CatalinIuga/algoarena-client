@@ -12,8 +12,17 @@ export const createCategory = async (name: string) => {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ categoryName: name}),
+    body: JSON.stringify({ categoryName: name }),
   });
 
-  return response.json() as Promise<CategoriesResponse>;
+  let result;
+  try {
+    result = await response.json();
+  } catch (error) {}
+
+  if (!response.ok) {
+    throw new Error(result.message);
+  }
+
+  return "Category added succesfully!";
 };

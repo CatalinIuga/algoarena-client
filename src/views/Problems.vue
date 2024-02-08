@@ -39,7 +39,7 @@ import {
   PaginationNext,
   PaginationPrev,
 } from "@/components/ui/pagination";
-import { PencilIcon, XIcon } from "lucide-vue-next";
+import { PencilIcon, PlusIcon, XIcon } from "lucide-vue-next";
 
 import {
   Select,
@@ -51,7 +51,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/toast/use-toast";
 
-import { getCategories } from "@/service/categoriesService";
+import { createCategory, getCategories } from "@/service/categoriesService";
 import {
   createProblem,
   deleteProblemById,
@@ -293,6 +293,36 @@ function resetNewProblem() {
   newProblem.output = "";
 }
 
+const categoryName = ref("");
+async function newCategory() {
+  if (categoryName.value.length < 3)
+    return toast({
+      title: "Error",
+      description:
+        "Category name is required and must be at least 3 characters long.",
+      variant: "destructive",
+    });
+
+  try {
+    await createCategory(categoryName.value);
+    toast({
+      title: "Sucess",
+      description: "Category created",
+      variant: "default",
+    });
+    categories.value = await getCategories();
+  } catch (error: any) {
+    toast({
+      title: "Error",
+      description: error.message.toLowerCase().includes("duplicate")
+        ? "Category already exists"
+        : error.message,
+      variant: "destructive",
+    });
+  }
+  categoryName.value = "";
+}
+
 function getStatus(problemId: number) {
   const submission = submissions.value.find(
     (submission) =>
@@ -451,8 +481,43 @@ onMounted(async () => {
               >
                 {{ category.categoryName }}
               </Badge>
+              <Dialog>
+                <DialogTrigger as-child>
+                  <Badge variant="secondary" class="cursor-pointer">
+                    <PlusIcon class="size-4 text-green-500" />
+                  </Badge>
+                </DialogTrigger>
+                <DialogContent
+                  class="max-h-[500px] overflow-y-auto sm:max-w-[600px]"
+                >
+                  <DialogHeader>
+                    <DialogTitle>Add Category</DialogTitle>
+                    <DialogDescription>
+                      Choose a name for the new category
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div class="grid gap-4 py-4">
+                    <div class="grid grid-cols-4 items-center gap-4">
+                      <Label for="categoryName" class="text-right">Name</Label>
+                      <Input
+                        id="categoryName"
+                        v-model="categoryName"
+                        placeholder="Category name"
+                        class="col-span-3"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button @click="newCategory" type="submit">
+                      Save changes
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
             </div>
           </div>
+
+          <!-- Difficulty filter -->
           <div class="flex flex-col gap-2">
             <Label class="underline">Difficulty</Label>
             <Select default-value="any" v-model="difficultyQuery">
