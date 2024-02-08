@@ -164,6 +164,36 @@ function addOrRemoveNewCategory(id: number) {
 }
 
 async function createNewProblem() {
+  if (newProblem.name.length < 3)
+    return toast({
+      title: "Error",
+      description: "Name is required and must be at least 3 characters long.",
+      variant: "destructive",
+    });
+  if (newProblem.description.length < 3)
+    return toast({
+      title: "Error",
+      description:
+        "Description is required and must be at least 3 characters long.",
+      variant: "destructive",
+    });
+
+  if (newProblem.categoriesIds.length === 0)
+    return toast({
+      title: "Error",
+      description: "At least one category is required. Create one if needed.",
+      variant: "destructive",
+    });
+
+  if (errorNewProblem.value) {
+    toast({
+      title: "Error",
+      description: errorNewProblem.value,
+      variant: "destructive",
+    });
+    return;
+  }
+
   try {
     successNewProblem.value = await createProblem(newProblem);
     toast({
@@ -251,6 +281,41 @@ async function updateProblem(
     output: string;
   },
 ) {
+  if (name.length < 3)
+    return toast({
+      title: "Error",
+      description: "Name is required and must be at least 3 characters long.",
+      variant: "destructive",
+    });
+
+  if (description.length < 3)
+    return toast({
+      title: "Error",
+      description:
+        "Description is required and must be at least 3 characters long.",
+      variant: "destructive",
+    });
+
+  if (categoriesIds.length === 0)
+    return toast({
+      title: "Error",
+      description: "At least one category is required. Create one if needed.",
+      variant: "destructive",
+    });
+
+  if (
+    exampleInput.trim() === "" ||
+    exampleOutput.trim() === "" ||
+    input.trim() === "" ||
+    output.trim() === ""
+  )
+    return toast({
+      title: "Error",
+      description:
+        "Example input, example output, input and output are required.",
+      variant: "destructive",
+    });
+
   try {
     await updateProblemById(id, {
       id,
