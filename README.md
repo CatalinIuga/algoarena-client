@@ -17,3 +17,21 @@ The backend for this project can be found [here](https://github.com/24online24/a
 - **Frontend** - Vue3 + TypeScript + Vite
 - **Backend** - Spring Boot + MySQL
 - **Judge0** - Docker
+
+
+## Screenshots
+
+Landing page
+![Landing page](./assets/landing.png)
+
+Problem page
+![Problem page](./assets/problem.png)
+
+Submission page
+![Submission page](./assets/submission.png)
+
+Problems page
+![Problems page](./assets/problems.png)
+
+Profile page
+![Profile page](./assets/profile.png)
